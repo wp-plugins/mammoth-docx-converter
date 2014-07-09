@@ -1,6 +1,6 @@
 === Mammoth .docx converter ===
 Contributors: michaelwilliamson
-Tags: docx, html, word, office
+Tags: docx, html, word, office, paste
 Requires at least: 3.5
 Tested up to: 3.9
 Stable tag: 0.1.7
@@ -8,6 +8,7 @@ License: BSD 2-clause
 License URI: http://opensource.org/licenses/BSD-2-Clause
 
 Mammoth converts semantically marked up .docx documents to simple and clean HTML.
+This allows you to paste from Word documents without the usual mess.
 
 == Description ==
 
@@ -24,6 +25,24 @@ There's a large mismatch between the structure used by .docx and the structure o
 meaning that the conversion is unlikely to be perfect for more complicated documents.
 Mammoth works best if you only use styles to semantically mark up your document.
 
+The following features are currently supported:
+
+* Headings.
+
+* Lists.
+
+* Tables.
+  The formatting of the table itself, such as borders, is currently ignored,
+  but the formatting of the text is treated the same as in the rest of the document.
+  
+* Footnotes.
+
+* Images.
+
+* Bold and italics.
+
+* Links.
+
 == Installation ==
 
 Install the plugin in the usual way,
@@ -32,6 +51,10 @@ If you can't see the meta box,
 make sure that it's selected by taking a look at the "Screen Options" for adding a post.
 
 == Changelog ==
+
+= 0.1.7 =
+
+* Update to mammoth.js 0.3.5. Includes support for tables.
 
 = 0.1.7 =
 
