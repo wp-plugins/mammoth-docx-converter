@@ -1,7 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function() {
     var mammoth = require("mammoth");
-    var htmlPaths = require("mammoth/lib/html-paths");
     
     var latestDocumentArrayBuffer = null;
     var uploadElement = document.getElementById("mammoth-docx-upload");
@@ -50,27 +49,20 @@
     
     function insertIntoEditor() {
         var options = {
-            convertImage: function(element, html, messages, callback) {
-                element.read("binary").then(function(imageBinaryString) {
+            convertImage: mammoth.images.inline(function(element) {
+                return element.read("binary").then(function(imageBinaryString) {
                     var filename = "word-image.png";
-                    uploadImage({
+                    return uploadImage({
                         filename: filename,
                         contentType: element.contentType,
-                        binary: imageBinaryString,
-                        success: function(uploadResult) {
-                            var attributes = {
-                                src: uploadResult.data.url
-                            };
-                            if (element.altText) {
-                                attributes.alt = element.altText;
-                            }
-                            html.selfClosing(htmlPaths.element("img", attributes));
-                            callback();
-                        },
-                        failure: callback
+                        binary: imageBinaryString
                     });
-                }).then(null, showError);
-            }
+                }).then(function(uploadResult) {
+                    return {
+                        src: uploadResult.data.url
+                    };
+                });
+            })
         };
         
         convertToHtml({arrayBuffer: latestDocumentArrayBuffer}, options)
@@ -94,15 +86,13 @@
             contentType: contentType,
             filename: filename
         });
-        jQuery.ajax({
+        return jQuery.ajax({
             url: document.getElementById("mammoth-docx-upload-image-href").value,
             type: "POST",
             data: formData.body(),
             processData: false,
             contentType: 'multipart/form-data; boundary=' + formData.boundary,
-            dataType: "json",
-            success: options.success,
-            failure: options.failure
+            dataType: "json"
         });
     }
     
@@ -247,7 +237,7 @@
 })();
 
 
-},{"mammoth":38,"mammoth/lib/html-paths":35}],2:[function(require,module,exports){
+},{"mammoth":38}],2:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
