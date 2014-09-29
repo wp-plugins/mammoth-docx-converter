@@ -4932,6 +4932,7 @@ function isList(element, levelIndex, isOrdered) {
 var promises = require("./promises");
 var async = require("async");
 
+var documents = require("./documents");
 var htmlPaths = require("./html-paths");
 var HtmlGenerator = require("./html-generator").HtmlGenerator;
 var results = require("./results");
@@ -5033,6 +5034,12 @@ function DocumentConversion(options) {
         }
         if (run.isItalic) {
             runHtml.open(htmlPaths.element("em"));
+        }
+        if (run.verticalAlignment === documents.verticalAlignment.superscript) {
+            runHtml.open(htmlPaths.element("sup"));
+        }
+        if (run.verticalAlignment === documents.verticalAlignment.subscript) {
+            runHtml.open(htmlPaths.element("sub"));
         }
         if (run.isUnderline && options.convertUnderline) {
             options.convertUnderline(runHtml);
@@ -5212,7 +5219,7 @@ function unrecognisedStyleWarning(type, element) {
     );
 }
 
-},{"./html-generator":34,"./html-paths":35,"./images":37,"./promises":40,"./results":41,"async":47}],25:[function(require,module,exports){
+},{"./documents":25,"./html-generator":34,"./html-paths":35,"./images":37,"./promises":40,"./results":41,"async":47}],25:[function(require,module,exports){
 var types = {
     document: "document",
     paragraph: "paragraph",
@@ -5259,9 +5266,16 @@ function Run(children, properties) {
         styleName: properties.styleName || null,
         isBold: properties.isBold,
         isUnderline: properties.isUnderline,
-        isItalic: properties.isItalic
+        isItalic: properties.isItalic,
+        verticalAlignment: properties.verticalAlignment || verticalAlignment.baseline
     };
 }
+
+var verticalAlignment = {
+    baseline: "baseline",
+    superscript: "superscript",
+    subscript: "subscript"
+};
 
 function Text(value) {
     return {
@@ -5357,6 +5371,8 @@ exports.Table = Table;
 exports.TableRow = TableRow;
 exports.TableCell = TableCell;
 exports.LineBreak = LineBreak;
+
+exports.verticalAlignment = verticalAlignment;
 
 },{}],26:[function(require,module,exports){
 exports.readContentTypesFromXml = readContentTypesFromXml;
@@ -5463,6 +5479,37 @@ function DocumentXmlReader(options) {
         return new Result([]);
     }
     
+    function readRunProperties(element) {
+        var properties = {
+            type: "runProperties"
+        };
+        
+        readRunStyle(properties, element);
+        
+        var verticalAlignmentElement = element.first("w:vertAlign");
+        if (verticalAlignmentElement) {
+            properties.verticalAlignment = verticalAlignmentElement.attributes["w:val"];
+        }
+        
+        properties.isBold = !!element.first("w:b");
+        properties.isUnderline = !!element.first("w:u");
+        properties.isItalic = !!element.first("w:i");
+        
+        return new Result(properties);
+    }
+    
+    function readRunStyle(properties, element) {
+        var styleElement = element.first("w:rStyle");
+        if (styleElement) {
+            var styleId = styleElement.attributes["w:val"];
+            properties.styleId = styleId;
+            if (styleId) {
+                var style = styles.findCharacterStyleById(styleId);
+                properties.styleName = style.name;
+            }
+        }
+    }
+    
     function readChildElements(element) {
         return readXmlElements(element.children);
     }
@@ -5517,26 +5564,7 @@ function DocumentXmlReader(options) {
                     );
                 });
         },
-        "w:rPr": function(element) {
-            var properties = {
-                type: "runProperties"
-            };
-            
-            var styleElement = element.first("w:rStyle");
-            if (styleElement) {
-                var styleId = styleElement.attributes["w:val"];
-                properties.styleId = styleId;
-                if (styleId) {
-                    var style = styles.findCharacterStyleById(styleId);
-                    properties.styleName = style.name;
-                }
-            }
-            properties.isBold = !!element.first("w:b");
-            properties.isUnderline = !!element.first("w:u");
-            properties.isItalic = !!element.first("w:i");
-            
-            return new Result(properties);
-        },
+        "w:rPr": readRunProperties,
         "w:t": function(element) {
             return new Result(new documents.Text(element.text()));
         },
@@ -5830,10 +5858,16 @@ function read(xmlString) {
 function readXmlFromZipFile(docxFile, path) {
     if (docxFile.exists(path)) {
         return docxFile.read(path, "utf-8")
+            .then(stripUtf8Bom)
             .then(read);
     } else {
         return promises.resolve(null);
     }
+}
+
+
+function stripUtf8Bom(xmlString) {
+    return xmlString.replace(/^\uFEFF/g, '');
 }
 
 },{"../promises":40,"../xmlreader":45}],32:[function(require,module,exports){
