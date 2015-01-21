@@ -3,7 +3,7 @@ Contributors: michaelwilliamson
 Tags: docx, html, word, office, paste
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 0.1.12
+Stable tag: 0.1.13
 License: BSD 2-clause
 License URI: http://opensource.org/licenses/BSD-2-Clause
 
@@ -35,7 +35,7 @@ The following features are currently supported:
   The formatting of the table itself, such as borders, is currently ignored,
   but the formatting of the text is treated the same as in the rest of the document.
   
-* Footnotes.
+* Footnotes and endnotes.
 
 * Images.
 
@@ -51,6 +51,16 @@ If you can't see the meta box,
 make sure that it's selected by taking a look at the "Screen Options" for adding a post.
 
 == Changelog ==
+
+= 0.1.13 =
+
+* Update mammoth.js to 0.3.14. Includes support for endnotes.
+
+= 0.1.12 =
+
+* Fix preview rendering on Chrome.
+
+* Update mammoth.js to 0.3.12.
 
 = 0.1.11 =
 

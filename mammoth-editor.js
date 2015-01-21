@@ -4959,9 +4959,9 @@ function DocumentConverter(options) {
 }
 
 function DocumentConversion(options) {
-    var footnoteNumber = 1;
+    var noteNumber = 1;
     
-    var footnoteIds = [];
+    var noteReferences = [];
     
     options = options || {};
     var generateUniquifier = options.generateUniquifier || function() {
@@ -5071,7 +5071,7 @@ function DocumentConversion(options) {
         });
     });
 
-    function footnoteUid(id) {
+    function noteUid(id) {
         return uniquifier + "-" + id;
     }
     
@@ -5130,10 +5130,10 @@ function DocumentConversion(options) {
                 } else {
                     html.closeAll();
                     html.open(htmlPaths.element("ol"));
-                    var footnotes = footnoteIds.map(function(id) {
-                        return document.footnotes.findFootnoteById(id);
+                    var notes = noteReferences.map(function(noteReference) {
+                        return document.notes.resolve(noteReference);
                     });
-                    convertElements(footnotes, html, messages, function(error) {
+                    convertElements(notes, html, messages, function(error) {
                         if (error) {
                             callback(error);
                         } else {
@@ -5165,31 +5165,31 @@ function DocumentConversion(options) {
                 }
             });
         },
-        "footnoteReference": function(element, html, messages, callback) {
-            var uid = footnoteUid(element.footnoteId);
+        "noteReference": function(element, html, messages, callback) {
+            var uid = noteUid(element.noteId);
             
             html.open(htmlPaths.element("sup"));
             html.open(htmlPaths.element("a", {
-                href: "#footnote-" + uid,
-                id: "footnote-ref-" + uid
+                href: "#" + element.noteType + "-" + uid,
+                id: element.noteType + "-ref-" + uid
             }));
-            footnoteIds.push(element.footnoteId);
-            html.text("[" + (footnoteNumber++) + "]");
+            noteReferences.push(element);
+            html.text("[" + (noteNumber++) + "]");
             html.close();
             html.close();
             callback();
         },
-        "footnote": function(element, html, messages, callback) {
-            var uid = footnoteUid(element.id);
+        "note": function(element, html, messages, callback) {
+            var uid = noteUid(element.id);
             
-            html.open(htmlPaths.element("li", {id: "footnote-" + uid}));
+            html.open(htmlPaths.element("li", {id: element.noteType + "-" + uid}));
             var footnoteHtml = new HtmlGenerator();
             convertElements(element.body, footnoteHtml, messages, function(err) {
                 if (err) {
                     callback(err);
                 } else {
                     footnoteHtml.text(" ");
-                    footnoteHtml.open(htmlPaths.element("a", {href: "#footnote-ref-" + uid}));
+                    footnoteHtml.open(htmlPaths.element("a", {href: "#" + element.noteType + "-ref-" + uid}));
                     footnoteHtml.text("↑");
                     footnoteHtml.closeAll();
                     html.append(footnoteHtml);
@@ -5220,6 +5220,8 @@ function unrecognisedStyleWarning(type, element) {
 }
 
 },{"./documents":25,"./html-generator":34,"./html-paths":35,"./images":37,"./promises":40,"./results":41,"async":47}],25:[function(require,module,exports){
+var _ = require("underscore");
+
 var types = {
     document: "document",
     paragraph: "paragraph",
@@ -5227,9 +5229,9 @@ var types = {
     text: "text",
     tab: "tab",
     hyperlink: "hyperlink",
-    footnoteReference: "footnoteReference",
+    noteReference: "noteReference",
     image: "image",
-    footnote: "footnote",
+    note: "note",
     table: "table",
     tableRow: "tableRow",
     tableCell: "tableCell",
@@ -5241,7 +5243,7 @@ function Document(children, options) {
     return {
         type: types.document,
         children: children,
-        footnotes: options.footnotes || new Footnotes({})
+        notes: options.notes || new Notes({})
     };
 }
 
@@ -5298,27 +5300,39 @@ function Hyperlink(children, options) {
     };
 }
 
-function FootnoteReference(options) {
+function NoteReference(options) {
     return {
-        type: types.footnoteReference,
-        footnoteId: options.footnoteId
+        type: types.noteReference,
+        noteType: options.noteType,
+        noteId: options.noteId
     };
 }
 
-function Footnotes(footnotes) {
-    this._footnotes = footnotes;
+function Notes(notes) {
+    this._notes = _.indexBy(notes, function(note) {
+        return noteKey(note.noteType, note.id);
+    });
 }
 
-Footnotes.prototype.findFootnoteById = function(id) {
-    return this._footnotes[id] || null;
+Notes.prototype.resolve = function(reference) {
+    return this.findNoteByKey(noteKey(reference.noteType, reference.noteId));
 };
 
-function Footnote(options) {
+Notes.prototype.findNoteByKey = function(key) {
+    return this._notes[key] || null;
+};
+
+function Note(options) {
     return {
-        type: types.footnote,
-        body: options.body,
-        id: options.id
+        type: types.note,
+        noteType: options.noteType,
+        id: options.id,
+        body: options.body
     };
+}
+
+function noteKey(noteType, id) {
+    return noteType + "-" + id;
 }
 
 function Image(options) {
@@ -5363,9 +5377,9 @@ exports.Run = Run;
 exports.Text = Text;
 exports.Tab = Tab;
 exports.Hyperlink = Hyperlink;
-exports.FootnoteReference = FootnoteReference;
-exports.Footnotes = Footnotes;
-exports.Footnote = Footnote;
+exports.NoteReference = NoteReference;
+exports.Notes = Notes;
+exports.Note = Note;
 exports.Image = Image;
 exports.Table = Table;
 exports.TableRow = TableRow;
@@ -5374,7 +5388,7 @@ exports.LineBreak = LineBreak;
 
 exports.verticalAlignment = verticalAlignment;
 
-},{}],26:[function(require,module,exports){
+},{"underscore":130}],26:[function(require,module,exports){
 exports.readContentTypesFromXml = readContentTypesFromXml;
 exports.defaultContentTypes = {
     findContentType: function(path) {
@@ -5430,7 +5444,7 @@ function DocumentXmlReader(options) {
     var docxFile = options.docxFile;
     var numbering = options.numbering;
     var styles = options.styles;
-    var rawFootnotes = options.footnotes || [];
+    var rawNotes = (options.footnotes || []).concat(options.endnotes || []);
     
     
     function convertXmlToDocument(documentXml) {
@@ -5438,24 +5452,25 @@ function DocumentXmlReader(options) {
         
         var result = readXmlElements(body.children)
             .flatMap(function(children) {
-                return readFootnotes().map(function(footnotes) {
-                    return new documents.Document(children, {footnotes: footnotes});
+                return readNotes().map(function(notes) {
+                    return new documents.Document(children, {notes: notes});
                 });
             });
         result.document = result.value;
         return result;
     }
     
-    function readFootnotes() {
-        return Result.combine(rawFootnotes.map(function(rawFootnote) {
-            return readXmlElements(rawFootnote.body).map(function(body) {
-                return new documents.Footnote({
-                    id: rawFootnote.id,
+    function readNotes() {
+        return Result.combine(rawNotes.map(function(rawNote) {
+            return readXmlElements(rawNote.body).map(function(body) {
+                return new documents.Note({
+                    noteType: rawNote.noteType,
+                    id: rawNote.id,
                     body: body
                 });
             });
-        })).map(function(footnotes) {
-            return new documents.Footnotes(_.indexBy(footnotes, "id"));
+        })).map(function(notes) {
+            return new documents.Notes(notes, "key");
         });
     }
 
@@ -5508,6 +5523,16 @@ function DocumentXmlReader(options) {
                 properties.styleName = style.name;
             }
         }
+    }
+    
+    function noteReferenceReader(noteType) {
+        return function(element) {
+            var noteId = element.attributes["w:id"];
+            return new Result(new documents.NoteReference({
+                noteType: noteType,
+                noteId: noteId
+            }));
+        };
     }
     
     function readChildElements(element) {
@@ -5591,12 +5616,8 @@ function DocumentXmlReader(options) {
         "w:tc": function(element) {
             return readXmlElements(element.children).map(documents.TableCell);
         },
-        "w:footnoteReference": function(element) {
-            var footnoteId = element.attributes["w:id"];
-            return new Result(new documents.FootnoteReference({
-                footnoteId: footnoteId
-            }));
-        },
+        "w:footnoteReference": noteReferenceReader("footnote"),
+        "w:endnoteReference": noteReferenceReader("endnote"),
         "w:br": function(element) {
             var breakType = element.attributes["w:type"];
             if (breakType) {
@@ -5654,6 +5675,7 @@ var ignoreElements = {
     "w:commentReference": true,
     "w:del": true,
     "w:footnoteRef": true,
+    "w:endnoteRef": true,
     "w:tblPr": true,
     "w:tblGrid": true,
     "w:tcPr": true
@@ -5691,7 +5713,7 @@ var relationshipsReader = require("./relationships-reader");
 var contentTypesReader = require("./content-types-reader");
 var numberingXml = require("./numbering-xml");
 var stylesReader = require("./styles-reader");
-var footnotesReader = require("./footnotes-reader");
+var notesReader = require("./notes-reader");
 
 
 function read(options) {
@@ -5703,15 +5725,17 @@ function read(options) {
             readNumberingFromZipFile(docxFile),
             readStylesFromZipFile(docxFile),
             readFootnotesFromZipFile(docxFile),
+            readEndnotesFromZipFile(docxFile),
             readXmlFromZipFile(docxFile, "word/document.xml"),
-        ]).spread(function(relationships, contentTypes, numbering, styles, footnotes, documentXml) {
+        ]).spread(function(relationships, contentTypes, numbering, styles, footnotes, endnotes, documentXml) {
             var reader = new DocumentXmlReader({
                 relationships: relationships,
                 contentTypes: contentTypes,
                 docxFile: docxFile,
                 numbering: numbering,
                 styles: styles,
-                footnotes: footnotes
+                footnotes: footnotes,
+                endnotes: endnotes
             });
             return reader.convertXmlToDocument(documentXml);
         });
@@ -5753,28 +5777,39 @@ var readStylesFromZipFile = xmlFileReader({
 
 var readFootnotesFromZipFile = xmlFileReader({
     filename: "word/footnotes.xml",
-    readElement: footnotesReader.readFootnotesXml,
+    readElement: notesReader.readFootnotesXml,
     defaultValue: undefined
 });
 
-},{"../promises":40,"../unzip":22,"./content-types-reader":26,"./document-xml-reader":27,"./footnotes-reader":29,"./numbering-xml":30,"./office-xml-reader":31,"./relationships-reader":32,"./styles-reader":33}],29:[function(require,module,exports){
-exports.readFootnotesXml = readFootnotesXml;
+var readEndnotesFromZipFile = xmlFileReader({
+    filename: "word/endnotes.xml",
+    readElement: notesReader.readEndnotesXml,
+    defaultValue: undefined
+});
 
-function readFootnotesXml(xml) {
-    return xml.root.getElementsByTagName("w:footnote")
-        .filter(isFootnoteElement)
-        .map(readFootnoteElement);
-}
+},{"../promises":40,"../unzip":22,"./content-types-reader":26,"./document-xml-reader":27,"./notes-reader":29,"./numbering-xml":30,"./office-xml-reader":31,"./relationships-reader":32,"./styles-reader":33}],29:[function(require,module,exports){
+exports.readFootnotesXml = createReader("footnote");
+exports.readEndnotesXml = createReader("endnote");
 
-function isFootnoteElement(element) {
-    var type = element.attributes["w:type"];
-    return type !== "continuationSeparator" && type !== "separator";
-}
+function createReader(noteType) {
+    function readNotesXml(xml) {
+        return xml.root.getElementsByTagName("w:" + noteType)
+            .filter(isFootnoteElement)
+            .map(readFootnoteElement);
+    }
 
-function readFootnoteElement(footnoteElement) {
-    var id = footnoteElement.attributes["w:id"];
-    var body = footnoteElement.children;
-    return {id: id, body: body};
+    function isFootnoteElement(element) {
+        var type = element.attributes["w:type"];
+        return type !== "continuationSeparator" && type !== "separator";
+    }
+
+    function readFootnoteElement(footnoteElement) {
+        var id = footnoteElement.attributes["w:id"];
+        var body = footnoteElement.children;
+        return {noteType: noteType, id: id, body: body};
+    }
+    
+    return readNotesXml;
 }
 
 },{}],30:[function(require,module,exports){
