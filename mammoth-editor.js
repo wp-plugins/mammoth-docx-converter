@@ -48,6 +48,7 @@
         .addEventListener("click", insertIntoEditor, false);
     
     function insertIntoEditor() {
+        var postId = document.getElementById("post_ID").value;
         var options = {
             convertImage: mammoth.images.inline(function(element) {
                 return element.read("binary").then(function(imageBinaryString) {
@@ -62,9 +63,9 @@
                         src: uploadResult.data.url
                     };
                 });
-            })
+            }),
+            idPrefix: "post-" + postId
         };
-        
         convertToHtml({arrayBuffer: latestDocumentArrayBuffer}, options)
             .then(function(result) {
                 insertTextIntoEditor(result.value);
@@ -237,7 +238,7 @@
 })();
 
 
-},{"mammoth":38}],2:[function(require,module,exports){
+},{"mammoth":37}],2:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -1196,9 +1197,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require("/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":3,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":11,"inherits":10}],5:[function(require,module,exports){
-
-},{}],6:[function(require,module,exports){
+},{"./support/isBuffer":3,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":10,"inherits":9}],5:[function(require,module,exports){
 /**
  * The buffer module from node.js, for the browser.
  *
@@ -2310,7 +2309,7 @@ function assert (test, message) {
   if (!test) throw new Error(message || 'Failed assertion')
 }
 
-},{"base64-js":7,"ieee754":8}],7:[function(require,module,exports){
+},{"base64-js":6,"ieee754":7}],6:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -2433,7 +2432,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	module.exports.fromByteArray = uint8ToBase64
 }())
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -2519,7 +2518,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2821,7 +2820,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2846,7 +2845,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2901,7 +2900,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2975,7 +2974,7 @@ function onend() {
   });
 }
 
-},{"./readable.js":16,"./writable.js":18,"inherits":10,"process/browser.js":14}],13:[function(require,module,exports){
+},{"./readable.js":15,"./writable.js":17,"inherits":9,"process/browser.js":13}],12:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3104,9 +3103,9 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"./duplex.js":12,"./passthrough.js":15,"./readable.js":16,"./transform.js":17,"./writable.js":18,"events":9,"inherits":10}],14:[function(require,module,exports){
-module.exports=require(11)
-},{}],15:[function(require,module,exports){
+},{"./duplex.js":11,"./passthrough.js":14,"./readable.js":15,"./transform.js":16,"./writable.js":17,"events":8,"inherits":9}],13:[function(require,module,exports){
+module.exports=require(10)
+},{}],14:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3149,7 +3148,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./transform.js":17,"inherits":10}],16:[function(require,module,exports){
+},{"./transform.js":16,"inherits":9}],15:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4086,7 +4085,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require("/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./index.js":13,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":11,"buffer":6,"events":9,"inherits":10,"process/browser.js":14,"string_decoder":19}],17:[function(require,module,exports){
+},{"./index.js":12,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":10,"buffer":5,"events":8,"inherits":9,"process/browser.js":13,"string_decoder":18}],16:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4292,7 +4291,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./duplex.js":12,"inherits":10}],18:[function(require,module,exports){
+},{"./duplex.js":11,"inherits":9}],17:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4680,7 +4679,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./index.js":13,"buffer":6,"inherits":10,"process/browser.js":14}],19:[function(require,module,exports){
+},{"./index.js":12,"buffer":5,"inherits":9,"process/browser.js":13}],18:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4873,11 +4872,11 @@ function base64DetectIncompleteChar(buffer) {
   return incomplete;
 }
 
-},{"buffer":6}],20:[function(require,module,exports){
+},{"buffer":5}],19:[function(require,module,exports){
 module.exports=require(3)
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports=require(4)
-},{"./support/isBuffer":20,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":11,"inherits":10}],22:[function(require,module,exports){
+},{"./support/isBuffer":19,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":10,"inherits":9}],21:[function(require,module,exports){
 var promises = require("../lib/promises");
 var zipfile = require("../lib/zipfile");
 
@@ -4891,7 +4890,7 @@ function openZip(options) {
     }
 }
 
-},{"../lib/promises":40,"../lib/zipfile":46}],23:[function(require,module,exports){
+},{"../lib/promises":39,"../lib/zipfile":45}],22:[function(require,module,exports){
 exports.paragraph = paragraph;
 exports.run = run;
 
@@ -4928,7 +4927,7 @@ function isList(element, levelIndex, isOrdered) {
         element.numbering.isOrdered == isOrdered;
 }
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var promises = require("./promises");
 var async = require("async");
 
@@ -4964,10 +4963,9 @@ function DocumentConversion(options) {
     var noteReferences = [];
     
     options = options || {};
-    var generateUniquifier = options.generateUniquifier || function() {
-        return Math.floor(Math.random() * 1000000000000000);
-    };
-    var uniquifier = generateUniquifier();
+    var idPrefix = options.idPrefix === undefined ?
+        Math.floor(Math.random() * 1000000000000000) :
+        options.idPrefix;
     
     var defaultParagraphStyle = htmlPaths.topLevelElement("p");
     
@@ -5071,8 +5069,12 @@ function DocumentConversion(options) {
         });
     });
 
-    function noteUid(id) {
-        return uniquifier + "-" + id;
+    function noteHtmlId(note) {
+        return idPrefix + "-" + note.noteType + "-" + note.noteId;
+    }
+    
+    function noteRefHtmlId(note) {
+        return idPrefix + "-" + note.noteType + "-ref-" + note.noteId;
     }
     
     function convertTable(element, html, messages, callback) {
@@ -5166,12 +5168,10 @@ function DocumentConversion(options) {
             });
         },
         "noteReference": function(element, html, messages, callback) {
-            var uid = noteUid(element.noteId);
-            
             html.open(htmlPaths.element("sup"));
             html.open(htmlPaths.element("a", {
-                href: "#" + element.noteType + "-" + uid,
-                id: element.noteType + "-ref-" + uid
+                href: "#" + noteHtmlId(element),
+                id: noteRefHtmlId(element)
             }));
             noteReferences.push(element);
             html.text("[" + (noteNumber++) + "]");
@@ -5180,16 +5180,14 @@ function DocumentConversion(options) {
             callback();
         },
         "note": function(element, html, messages, callback) {
-            var uid = noteUid(element.id);
-            
-            html.open(htmlPaths.element("li", {id: element.noteType + "-" + uid}));
+            html.open(htmlPaths.element("li", {id: noteHtmlId(element)}));
             var footnoteHtml = new HtmlGenerator();
             convertElements(element.body, footnoteHtml, messages, function(err) {
                 if (err) {
                     callback(err);
                 } else {
                     footnoteHtml.text(" ");
-                    footnoteHtml.open(htmlPaths.element("a", {href: "#" + element.noteType + "-ref-" + uid}));
+                    footnoteHtml.open(htmlPaths.element("a", {href: "#" + noteRefHtmlId(element)}));
                     footnoteHtml.text("↑");
                     footnoteHtml.closeAll();
                     html.append(footnoteHtml);
@@ -5219,7 +5217,7 @@ function unrecognisedStyleWarning(type, element) {
     );
 }
 
-},{"./documents":25,"./html-generator":34,"./html-paths":35,"./images":37,"./promises":40,"./results":41,"async":47}],25:[function(require,module,exports){
+},{"./documents":24,"./html-generator":33,"./html-paths":34,"./images":36,"./promises":39,"./results":40,"async":46}],24:[function(require,module,exports){
 var _ = require("underscore");
 
 var types = {
@@ -5310,7 +5308,7 @@ function NoteReference(options) {
 
 function Notes(notes) {
     this._notes = _.indexBy(notes, function(note) {
-        return noteKey(note.noteType, note.id);
+        return noteKey(note.noteType, note.noteId);
     });
 }
 
@@ -5326,7 +5324,7 @@ function Note(options) {
     return {
         type: types.note,
         noteType: options.noteType,
-        id: options.id,
+        noteId: options.noteId,
         body: options.body
     };
 }
@@ -5388,7 +5386,7 @@ exports.LineBreak = LineBreak;
 
 exports.verticalAlignment = verticalAlignment;
 
-},{"underscore":130}],26:[function(require,module,exports){
+},{"underscore":136}],25:[function(require,module,exports){
 exports.readContentTypesFromXml = readContentTypesFromXml;
 exports.defaultContentTypes = {
     findContentType: function(path) {
@@ -5428,7 +5426,7 @@ function readContentTypesFromXml(xml) {
     };
 }
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 exports.DocumentXmlReader = DocumentXmlReader;
 
 var _ = require("underscore");
@@ -5465,12 +5463,12 @@ function DocumentXmlReader(options) {
             return readXmlElements(rawNote.body).map(function(body) {
                 return new documents.Note({
                     noteType: rawNote.noteType,
-                    id: rawNote.id,
+                    noteId: rawNote.id,
                     body: body
                 });
             });
         })).map(function(notes) {
-            return new documents.Notes(notes, "key");
+            return new documents.Notes(notes);
         });
     }
 
@@ -5646,23 +5644,34 @@ function DocumentXmlReader(options) {
             .getElementsByTagName("pic:blipFill")
             .getElementsByTagName("a:blip");
         
-        var results = blips.map(function(blip) {
-            var relationshipId = blip.attributes["r:embed"];
-            var imagePath = joinZipPath("word", relationships[relationshipId].target);
-            var readImage = docxFile.read.bind(docxFile, imagePath);
-            var altText = element.first("wp:docPr").attributes.descr;
-            
-            var image = documents.Image({
-                readImage: readImage,
-                altText: altText,
-                contentType: contentTypes.findContentType(imagePath)
-            });
-            return new Result(image);
-        });
+        return Result.combine(blips.map(readBlip.bind(null, element)));
+    }
+    
+    function readBlip(element, blip) {
+        var relationshipId = blip.attributes["r:embed"];
+        var imagePath = joinZipPath("word", relationships[relationshipId].target);
+        var readImage = docxFile.read.bind(docxFile, imagePath);
+        var altText = element.first("wp:docPr").attributes.descr;
+        var contentType = contentTypes.findContentType(imagePath);
         
-        return Result.combine(results);
+        var image = documents.Image({
+            readImage: readImage,
+            altText: altText,
+            contentType: contentType
+        });
+        var warnings = supportedImageTypes[contentType] ?
+            [] : warning("Image of type " + contentType + " is unlikely to display in web browsers");
+        return new Result(image, warnings);
     }
 }
+    
+var supportedImageTypes = {
+    "image/png": true,
+    "image/gif": true,
+    "image/jpeg": true,
+    "image/svg+xml": true,
+    "image/tiff": true
+};
 
 var ignoreElements = {
     "w:bookmarkStart": true,
@@ -5701,7 +5710,7 @@ function joinZipPath(first, second) {
     return first + "/" + second;
 }
 
-},{"../documents":25,"../results":41,"underscore":130}],28:[function(require,module,exports){
+},{"../documents":24,"../results":40,"underscore":136}],27:[function(require,module,exports){
 exports.read = read;
 
 var promises = require("../promises");
@@ -5787,7 +5796,7 @@ var readEndnotesFromZipFile = xmlFileReader({
     defaultValue: undefined
 });
 
-},{"../promises":40,"../unzip":22,"./content-types-reader":26,"./document-xml-reader":27,"./notes-reader":29,"./numbering-xml":30,"./office-xml-reader":31,"./relationships-reader":32,"./styles-reader":33}],29:[function(require,module,exports){
+},{"../promises":39,"../unzip":21,"./content-types-reader":25,"./document-xml-reader":26,"./notes-reader":28,"./numbering-xml":29,"./office-xml-reader":30,"./relationships-reader":31,"./styles-reader":32}],28:[function(require,module,exports){
 exports.readFootnotesXml = createReader("footnote");
 exports.readEndnotesXml = createReader("endnote");
 
@@ -5812,7 +5821,7 @@ function createReader(noteType) {
     return readNotesXml;
 }
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 exports.readNumberingXml = readNumberingXml;
 exports.Numbering = Numbering;
 exports.defaultNumbering = new Numbering({});
@@ -5868,7 +5877,7 @@ function readNums(xml, abstractNums) {
     return nums;
 }
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var promises = require("../promises");
 var xmlreader = require("../xmlreader");
 
@@ -5905,7 +5914,7 @@ function stripUtf8Bom(xmlString) {
     return xmlString.replace(/^\uFEFF/g, '');
 }
 
-},{"../promises":40,"../xmlreader":45}],32:[function(require,module,exports){
+},{"../promises":39,"../xmlreader":44}],31:[function(require,module,exports){
 exports.readRelationships = readRelationships;
 
 
@@ -5921,7 +5930,7 @@ function readRelationships(relationshipsXml) {
     return relationships;
 }
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 exports.readStylesXml = readStylesXml;
 exports.Styles = Styles;
 exports.defaultStyles = new Styles({}, {});
@@ -5964,7 +5973,7 @@ function readStyleElement(styleElement) {
     return {type: type, styleId: styleId, name: name};
 }
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 var htmlWriter = require("./html-writer");
 
 exports.HtmlGenerator = HtmlGenerator;
@@ -6072,7 +6081,7 @@ function findIndex(array, predicate) {
     return -1;
 }
 
-},{"./html-writer":36}],35:[function(require,module,exports){
+},{"./html-writer":35}],34:[function(require,module,exports){
 var _ = require("underscore");
 
 exports.topLevelElement = topLevelElement;
@@ -6119,10 +6128,9 @@ Element.prototype.matchesElement = function(element) {
     return this.tagNames[element.tagName] && _.isEqual(this.attributes || {}, element.attributes || {});
 };
 
+exports.empty = elements([]);
 
-
-
-},{"underscore":130}],36:[function(require,module,exports){
+},{"underscore":136}],35:[function(require,module,exports){
 var util = require("util");
 var _ = require("underscore");
 
@@ -6274,7 +6282,7 @@ function escapeHtml(value) {
         .replace(/>/g, '&gt;');
 }
 
-},{"underscore":130,"util":21}],37:[function(require,module,exports){
+},{"underscore":136,"util":20}],36:[function(require,module,exports){
 var promises = require("./promises");
 var htmlPaths = require("./html-paths");
 
@@ -6290,7 +6298,7 @@ exports.inline = function(func) {
     };
 };
 
-},{"./html-paths":35,"./promises":40}],38:[function(require,module,exports){
+},{"./html-paths":34,"./promises":39}],37:[function(require,module,exports){
 var docxReader = require("./docx/docx-reader");
 var DocumentConverter = require("./document-to-html").DocumentConverter;
 var readStyle = require("./style-reader").readStyle;
@@ -6344,7 +6352,7 @@ exports.styleMapping = function() {
     throw new Error('Use a raw string instead of mammoth.styleMapping e.g. "p[style-name=\'Title\'] => h1" instead of mammoth.styleMapping("p[style-name=\'Title\'] => h1")');
 };
 
-},{"./document-to-html":24,"./docx/docx-reader":28,"./images":37,"./options-reader":39,"./style-reader":42,"./transforms":43,"./underline":44}],39:[function(require,module,exports){
+},{"./document-to-html":23,"./docx/docx-reader":27,"./images":36,"./options-reader":38,"./style-reader":41,"./transforms":42,"./underline":43}],38:[function(require,module,exports){
 exports.readOptions = readOptions;
 
 
@@ -6353,6 +6361,8 @@ var _ = require("underscore");
 
 var standardOptions = exports._standardOptions = {
     styleMap: [
+        "p[style-name='Normal'] => p:fresh",
+    
         "p.Heading1 => h1:fresh",
         "p.Heading2 => h2:fresh",
         "p.Heading3 => h3:fresh",
@@ -6368,6 +6378,15 @@ var standardOptions = exports._standardOptions = {
         "p[style-name='heading 4'] => h4:fresh",
         
         "p[style-name='footnote text'] => p",
+        "r[style-name='footnote reference'] =>",
+        "p[style-name='endnote text'] => p",
+        "r[style-name='endnote reference'] =>",
+        
+        // LibreOffice
+        "p[style-name='Footnote'] => p",
+        "r[style-name='Footnote anchor'] =>",
+        "p[style-name='Endnote'] => p",
+        "r[style-name='Endnote anchor'] =>",
         
         "p:unordered-list(1) => ul > li:fresh",
         "p:unordered-list(2) => ul|ol > li > ul > li:fresh",
@@ -6416,7 +6435,7 @@ function identity(value) {
     return value;
 }
 
-},{"underscore":130}],40:[function(require,module,exports){
+},{"underscore":136}],39:[function(require,module,exports){
 var bluebird = require("bluebird/js/main/promise")();
 
 exports.defer = bluebird.defer;
@@ -6434,7 +6453,7 @@ exports.nfcall = function(func) {
 
 bluebird.prototype.fail = bluebird.prototype.caught;
 
-},{"bluebird/js/main/promise":66}],41:[function(require,module,exports){
+},{"bluebird/js/main/promise":65}],40:[function(require,module,exports){
 var _ = require("underscore");
 
 
@@ -6494,7 +6513,7 @@ function isSameMessage(first, second) {
     return first.type === second.type && first.message === second.message;
 }
 
-},{"underscore":130}],42:[function(require,module,exports){
+},{"underscore":136}],41:[function(require,module,exports){
 var _ = require("underscore");
 var lop = require("lop");
 var RegexTokeniser = lop.RegexTokeniser;
@@ -6516,12 +6535,14 @@ function createStyleRule() {
         lop.rules.sequence.capture(documentMatcherRule()),
         lop.rules.tokenOfType("whitespace"),
         lop.rules.tokenOfType("arrow"),
-        lop.rules.tokenOfType("whitespace"),
-        lop.rules.sequence.capture(htmlPathRule())
+        lop.rules.sequence.capture(lop.rules.optional(lop.rules.sequence(
+            lop.rules.tokenOfType("whitespace"),
+            lop.rules.sequence.capture(htmlPathRule())
+        ).head()))
     ).map(function(documentMatcher, htmlPath) {
         return {
             from: documentMatcher,
-            to: htmlPath
+            to: htmlPath.valueOrElse(htmlPaths.empty)
         };
     });
 }
@@ -6718,7 +6739,7 @@ function tokenise(string) {
 
 var styleRule = createStyleRule();
 
-},{"./document-matchers":23,"./html-paths":35,"lop":114,"underscore":130}],43:[function(require,module,exports){
+},{"./document-matchers":22,"./html-paths":34,"lop":120,"underscore":136}],42:[function(require,module,exports){
 exports.paragraph = function(transform) {
     function transformElement(element) {
         if (element.children) {
@@ -6735,7 +6756,7 @@ exports.paragraph = function(transform) {
     return transformElement;
 };
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var htmlPaths = require("./html-paths");
 
 
@@ -6747,7 +6768,7 @@ function element(name) {
     };
 }
 
-},{"./html-paths":35}],45:[function(require,module,exports){
+},{"./html-paths":34}],44:[function(require,module,exports){
 var promises = require("./promises");
 var sax = require("sax");
 var _ = require("underscore");
@@ -6876,7 +6897,7 @@ function toElementList(array) {
     return _.extend(array, elementListPrototype);
 }
 
-},{"./promises":40,"sax":129,"underscore":130}],46:[function(require,module,exports){
+},{"./promises":39,"sax":135,"underscore":136}],45:[function(require,module,exports){
 (function (Buffer){
 var JSZip = require("jszip");
 
@@ -6907,7 +6928,7 @@ function openArrayBuffer(arrayBuffer) {
 
 
 }).call(this,require("buffer").Buffer)
-},{"./promises":40,"buffer":6,"jszip":88}],47:[function(require,module,exports){
+},{"./promises":39,"buffer":5,"jszip":89}],46:[function(require,module,exports){
 (function (process){
 /*global setImmediate: false, setTimeout: false, console: false */
 (function () {
@@ -7869,7 +7890,7 @@ function openArrayBuffer(arrayBuffer) {
 }());
 
 }).call(this,require("/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":11}],48:[function(require,module,exports){
+},{"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":10}],47:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -7919,7 +7940,7 @@ Promise.prototype.any = function Promise$any() {
 
 };
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process){
 /**
  * The MIT License (MIT)
@@ -8036,7 +8057,7 @@ Async.prototype._reset = function Async$_reset() {
 module.exports = new Async();
 
 }).call(this,require("/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./queue.js":71,"./schedule.js":74,"./util.js":81,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":11}],50:[function(require,module,exports){
+},{"./queue.js":70,"./schedule.js":73,"./util.js":80,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":10}],49:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8159,7 +8180,7 @@ Promise.prototype.get = function Promise$get(propertyName) {
 };
 };
 
-},{"./util.js":81}],51:[function(require,module,exports){
+},{"./util.js":80}],50:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8239,7 +8260,7 @@ function Promise$fork(didFulfill, didReject, didProgress) {
 };
 };
 
-},{"./async.js":49,"./errors.js":56}],52:[function(require,module,exports){
+},{"./async.js":48,"./errors.js":55}],51:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8485,7 +8506,7 @@ var captureStackTrace = (function stackDetection() {
 return CapturedTrace;
 };
 
-},{"./es5.js":58,"./util.js":81}],53:[function(require,module,exports){
+},{"./es5.js":57,"./util.js":80}],52:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8583,7 +8604,7 @@ CatchFilter.prototype.doFilter = function CatchFilter$_doFilter(e) {
 return CatchFilter;
 };
 
-},{"./errors.js":56,"./es5.js":58,"./util.js":81}],54:[function(require,module,exports){
+},{"./errors.js":55,"./es5.js":57,"./util.js":80}],53:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8665,7 +8686,7 @@ function Promise$thenThrow(reason) {
 };
 };
 
-},{"./util.js":81}],55:[function(require,module,exports){
+},{"./util.js":80}],54:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8703,7 +8724,7 @@ Promise.each = function Promise$Each(promises, fn) {
 };
 };
 
-},{}],56:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8852,7 +8873,7 @@ module.exports = {
     canAttach: canAttach
 };
 
-},{"./es5.js":58,"./util.js":81}],57:[function(require,module,exports){
+},{"./es5.js":57,"./util.js":80}],56:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8894,7 +8915,7 @@ function apiRejection(msg) {
 return apiRejection;
 };
 
-},{"./errors.js":56}],58:[function(require,module,exports){
+},{"./errors.js":55}],57:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -8985,7 +9006,7 @@ if (isES5) {
     };
 }
 
-},{}],59:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -9023,7 +9044,7 @@ Promise.filter = function Promise$Filter(promises, fn, options) {
 };
 };
 
-},{}],60:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -9147,7 +9168,7 @@ Promise.prototype.tap = function Promise$tap(handler) {
 };
 };
 
-},{"./util.js":81}],61:[function(require,module,exports){
+},{"./util.js":80}],60:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -9302,7 +9323,7 @@ Promise.spawn = function Promise$Spawn(generatorFunction) {
 };
 };
 
-},{"./errors.js":56,"./util.js":81}],62:[function(require,module,exports){
+},{"./errors.js":55,"./util.js":80}],61:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -9428,7 +9449,7 @@ Promise.join = function Promise$Join() {
 
 };
 
-},{"./util.js":81}],63:[function(require,module,exports){
+},{"./util.js":80}],62:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -9581,7 +9602,7 @@ Promise.map = function Promise$Map(promises, fn, options, _filter) {
 
 };
 
-},{"./util.js":81}],64:[function(require,module,exports){
+},{"./util.js":80}],63:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -9661,7 +9682,7 @@ Promise.prototype.nodeify = function Promise$nodeify(nodeback, options) {
 };
 };
 
-},{"./async.js":49,"./util.js":81}],65:[function(require,module,exports){
+},{"./async.js":48,"./util.js":80}],64:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -9777,7 +9798,7 @@ function Promise$_progressUnchecked(progressValue) {
 };
 };
 
-},{"./async.js":49,"./errors.js":56,"./util.js":81}],66:[function(require,module,exports){
+},{"./async.js":48,"./errors.js":55,"./util.js":80}],65:[function(require,module,exports){
 (function (process){
 /**
  * The MIT License (MIT)
@@ -10877,7 +10898,7 @@ return Promise;
 };
 
 }).call(this,require("/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./any.js":48,"./async.js":49,"./call_get.js":50,"./cancel.js":51,"./captured_trace.js":52,"./catch_filter.js":53,"./direct_resolve.js":54,"./each.js":55,"./errors.js":56,"./errors_api_rejection":57,"./filter.js":59,"./finally.js":60,"./generators.js":61,"./join.js":62,"./map.js":63,"./nodeify.js":64,"./progress.js":65,"./promise_array.js":67,"./promise_resolver.js":68,"./promisify.js":69,"./props.js":70,"./race.js":72,"./reduce.js":73,"./settle.js":75,"./some.js":76,"./synchronous_inspection.js":77,"./thenables.js":78,"./timers.js":79,"./using.js":80,"./util.js":81,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":11}],67:[function(require,module,exports){
+},{"./any.js":47,"./async.js":48,"./call_get.js":49,"./cancel.js":50,"./captured_trace.js":51,"./catch_filter.js":52,"./direct_resolve.js":53,"./each.js":54,"./errors.js":55,"./errors_api_rejection":56,"./filter.js":58,"./finally.js":59,"./generators.js":60,"./join.js":61,"./map.js":62,"./nodeify.js":63,"./progress.js":64,"./promise_array.js":66,"./promise_resolver.js":67,"./promisify.js":68,"./props.js":69,"./race.js":71,"./reduce.js":72,"./settle.js":74,"./some.js":75,"./synchronous_inspection.js":76,"./thenables.js":77,"./timers.js":78,"./using.js":79,"./util.js":80,"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":10}],66:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -11083,7 +11104,7 @@ function PromiseArray$getActualLength(len) {
 return PromiseArray;
 };
 
-},{"./errors.js":56,"./util.js":81}],68:[function(require,module,exports){
+},{"./errors.js":55,"./util.js":80}],67:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -11245,7 +11266,7 @@ function PromiseResolver$_setCarriedStackTrace(trace) {
 
 module.exports = PromiseResolver;
 
-},{"./async.js":49,"./errors.js":56,"./es5.js":58,"./util.js":81}],69:[function(require,module,exports){
+},{"./async.js":48,"./errors.js":55,"./es5.js":57,"./util.js":80}],68:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -11575,7 +11596,7 @@ Promise.promisifyAll = function Promise$PromisifyAll(target, options) {
 };
 
 
-},{"./errors":56,"./promise_resolver.js":68,"./util.js":81}],70:[function(require,module,exports){
+},{"./errors":55,"./promise_resolver.js":67,"./util.js":80}],69:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -11687,7 +11708,7 @@ Promise.props = function Promise$Props(promises) {
 };
 };
 
-},{"./errors_api_rejection":57,"./es5.js":58,"./util.js":81}],71:[function(require,module,exports){
+},{"./errors_api_rejection":56,"./es5.js":57,"./util.js":80}],70:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -11806,7 +11827,7 @@ Queue.prototype._resizeTo = function Queue$_resizeTo(capacity) {
 
 module.exports = Queue;
 
-},{}],72:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -11882,7 +11903,7 @@ Promise.prototype.race = function Promise$race() {
 
 };
 
-},{"./errors_api_rejection.js":57,"./util.js":81}],73:[function(require,module,exports){
+},{"./errors_api_rejection.js":56,"./util.js":80}],72:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -12067,7 +12088,7 @@ Promise.reduce = function Promise$Reduce(promises, fn, initialValue, _each) {
 };
 };
 
-},{"./util.js":81}],74:[function(require,module,exports){
+},{"./util.js":80}],73:[function(require,module,exports){
 (function (process){
 /**
  * The MIT License (MIT)
@@ -12134,7 +12155,7 @@ else throw new Error("no async scheduler available");
 module.exports = schedule;
 
 }).call(this,require("/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":11}],75:[function(require,module,exports){
+},{"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":10}],74:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -12205,7 +12226,7 @@ Promise.prototype.settle = function Promise$settle() {
 };
 };
 
-},{"./util.js":81}],76:[function(require,module,exports){
+},{"./util.js":80}],75:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -12370,7 +12391,7 @@ Promise.prototype.some = function Promise$some(howMany) {
 Promise._SomePromiseArray = SomePromiseArray;
 };
 
-},{"./errors.js":56,"./util.js":81}],77:[function(require,module,exports){
+},{"./errors.js":55,"./util.js":80}],76:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -12450,7 +12471,7 @@ Promise.prototype.isResolved = function Promise$isResolved() {
 Promise.PromiseInspection = PromiseInspection;
 };
 
-},{}],78:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -12587,7 +12608,7 @@ function Promise$_doThenable(x, then, originalPromise) {
 return Promise$_Cast;
 };
 
-},{"./errors.js":56,"./util.js":81}],79:[function(require,module,exports){
+},{"./errors.js":55,"./util.js":80}],78:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -12697,7 +12718,7 @@ Promise.prototype.timeout = function Promise$timeout(ms, message) {
 
 };
 
-},{"./errors.js":56,"./errors_api_rejection":57,"./util.js":81}],80:[function(require,module,exports){
+},{"./errors.js":55,"./errors_api_rejection":56,"./util.js":80}],79:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -12891,7 +12912,7 @@ module.exports = function (Promise, apiRejection, cast) {
 
 };
 
-},{"./errors.js":56,"./util.js":81}],81:[function(require,module,exports){
+},{"./errors.js":55,"./util.js":80}],80:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -13163,7 +13184,7 @@ var ret = {
 
 module.exports = ret;
 
-},{"./es5.js":58}],82:[function(require,module,exports){
+},{"./es5.js":57}],81:[function(require,module,exports){
 'use strict';
 // private property
 var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
@@ -13235,7 +13256,7 @@ exports.decode = function(input, utf8) {
 
 };
 
-},{}],83:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 'use strict';
 function CompressedObject() {
     this.compressedSize = 0;
@@ -13265,7 +13286,7 @@ CompressedObject.prototype = {
 };
 module.exports = CompressedObject;
 
-},{}],84:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 'use strict';
 exports.STORE = {
     magic: "\x00\x00",
@@ -13280,7 +13301,111 @@ exports.STORE = {
 };
 exports.DEFLATE = require('./flate');
 
-},{"./flate":87}],85:[function(require,module,exports){
+},{"./flate":88}],84:[function(require,module,exports){
+'use strict';
+
+var utils = require('./utils');
+
+var table = [
+    0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
+    0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
+    0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,
+    0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
+    0x1DB71064, 0x6AB020F2, 0xF3B97148, 0x84BE41DE,
+    0x1ADAD47D, 0x6DDDE4EB, 0xF4D4B551, 0x83D385C7,
+    0x136C9856, 0x646BA8C0, 0xFD62F97A, 0x8A65C9EC,
+    0x14015C4F, 0x63066CD9, 0xFA0F3D63, 0x8D080DF5,
+    0x3B6E20C8, 0x4C69105E, 0xD56041E4, 0xA2677172,
+    0x3C03E4D1, 0x4B04D447, 0xD20D85FD, 0xA50AB56B,
+    0x35B5A8FA, 0x42B2986C, 0xDBBBC9D6, 0xACBCF940,
+    0x32D86CE3, 0x45DF5C75, 0xDCD60DCF, 0xABD13D59,
+    0x26D930AC, 0x51DE003A, 0xC8D75180, 0xBFD06116,
+    0x21B4F4B5, 0x56B3C423, 0xCFBA9599, 0xB8BDA50F,
+    0x2802B89E, 0x5F058808, 0xC60CD9B2, 0xB10BE924,
+    0x2F6F7C87, 0x58684C11, 0xC1611DAB, 0xB6662D3D,
+    0x76DC4190, 0x01DB7106, 0x98D220BC, 0xEFD5102A,
+    0x71B18589, 0x06B6B51F, 0x9FBFE4A5, 0xE8B8D433,
+    0x7807C9A2, 0x0F00F934, 0x9609A88E, 0xE10E9818,
+    0x7F6A0DBB, 0x086D3D2D, 0x91646C97, 0xE6635C01,
+    0x6B6B51F4, 0x1C6C6162, 0x856530D8, 0xF262004E,
+    0x6C0695ED, 0x1B01A57B, 0x8208F4C1, 0xF50FC457,
+    0x65B0D9C6, 0x12B7E950, 0x8BBEB8EA, 0xFCB9887C,
+    0x62DD1DDF, 0x15DA2D49, 0x8CD37CF3, 0xFBD44C65,
+    0x4DB26158, 0x3AB551CE, 0xA3BC0074, 0xD4BB30E2,
+    0x4ADFA541, 0x3DD895D7, 0xA4D1C46D, 0xD3D6F4FB,
+    0x4369E96A, 0x346ED9FC, 0xAD678846, 0xDA60B8D0,
+    0x44042D73, 0x33031DE5, 0xAA0A4C5F, 0xDD0D7CC9,
+    0x5005713C, 0x270241AA, 0xBE0B1010, 0xC90C2086,
+    0x5768B525, 0x206F85B3, 0xB966D409, 0xCE61E49F,
+    0x5EDEF90E, 0x29D9C998, 0xB0D09822, 0xC7D7A8B4,
+    0x59B33D17, 0x2EB40D81, 0xB7BD5C3B, 0xC0BA6CAD,
+    0xEDB88320, 0x9ABFB3B6, 0x03B6E20C, 0x74B1D29A,
+    0xEAD54739, 0x9DD277AF, 0x04DB2615, 0x73DC1683,
+    0xE3630B12, 0x94643B84, 0x0D6D6A3E, 0x7A6A5AA8,
+    0xE40ECF0B, 0x9309FF9D, 0x0A00AE27, 0x7D079EB1,
+    0xF00F9344, 0x8708A3D2, 0x1E01F268, 0x6906C2FE,
+    0xF762575D, 0x806567CB, 0x196C3671, 0x6E6B06E7,
+    0xFED41B76, 0x89D32BE0, 0x10DA7A5A, 0x67DD4ACC,
+    0xF9B9DF6F, 0x8EBEEFF9, 0x17B7BE43, 0x60B08ED5,
+    0xD6D6A3E8, 0xA1D1937E, 0x38D8C2C4, 0x4FDFF252,
+    0xD1BB67F1, 0xA6BC5767, 0x3FB506DD, 0x48B2364B,
+    0xD80D2BDA, 0xAF0A1B4C, 0x36034AF6, 0x41047A60,
+    0xDF60EFC3, 0xA867DF55, 0x316E8EEF, 0x4669BE79,
+    0xCB61B38C, 0xBC66831A, 0x256FD2A0, 0x5268E236,
+    0xCC0C7795, 0xBB0B4703, 0x220216B9, 0x5505262F,
+    0xC5BA3BBE, 0xB2BD0B28, 0x2BB45A92, 0x5CB36A04,
+    0xC2D7FFA7, 0xB5D0CF31, 0x2CD99E8B, 0x5BDEAE1D,
+    0x9B64C2B0, 0xEC63F226, 0x756AA39C, 0x026D930A,
+    0x9C0906A9, 0xEB0E363F, 0x72076785, 0x05005713,
+    0x95BF4A82, 0xE2B87A14, 0x7BB12BAE, 0x0CB61B38,
+    0x92D28E9B, 0xE5D5BE0D, 0x7CDCEFB7, 0x0BDBDF21,
+    0x86D3D2D4, 0xF1D4E242, 0x68DDB3F8, 0x1FDA836E,
+    0x81BE16CD, 0xF6B9265B, 0x6FB077E1, 0x18B74777,
+    0x88085AE6, 0xFF0F6A70, 0x66063BCA, 0x11010B5C,
+    0x8F659EFF, 0xF862AE69, 0x616BFFD3, 0x166CCF45,
+    0xA00AE278, 0xD70DD2EE, 0x4E048354, 0x3903B3C2,
+    0xA7672661, 0xD06016F7, 0x4969474D, 0x3E6E77DB,
+    0xAED16A4A, 0xD9D65ADC, 0x40DF0B66, 0x37D83BF0,
+    0xA9BCAE53, 0xDEBB9EC5, 0x47B2CF7F, 0x30B5FFE9,
+    0xBDBDF21C, 0xCABAC28A, 0x53B39330, 0x24B4A3A6,
+    0xBAD03605, 0xCDD70693, 0x54DE5729, 0x23D967BF,
+    0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94,
+    0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
+];
+
+/**
+ *
+ *  Javascript crc32
+ *  http://www.webtoolkit.info/
+ *
+ */
+module.exports = function crc32(input, crc) {
+    if (typeof input === "undefined" || !input.length) {
+        return 0;
+    }
+
+    var isArray = utils.getTypeOf(input) !== "string";
+
+    if (typeof(crc) == "undefined") {
+        crc = 0;
+    }
+    var x = 0;
+    var y = 0;
+    var b = 0;
+
+    crc = crc ^ (-1);
+    for (var i = 0, iTop = input.length; i < iTop; i++) {
+        b = isArray ? input[i] : input.charCodeAt(i);
+        y = (crc ^ b) & 0xFF;
+        x = table[y];
+        crc = (crc >>> 8) ^ x;
+    }
+
+    return crc ^ (-1);
+};
+// vim: set shiftwidth=4 softtabstop=4:
+
+},{"./utils":101}],85:[function(require,module,exports){
 'use strict';
 var utils = require('./utils');
 
@@ -13389,15 +13514,124 @@ DataReader.prototype = {
 };
 module.exports = DataReader;
 
-},{"./utils":95}],86:[function(require,module,exports){
+},{"./utils":101}],86:[function(require,module,exports){
 'use strict';
 exports.base64 = false;
 exports.binary = false;
 exports.dir = false;
+exports.createFolders = false;
 exports.date = null;
 exports.compression = null;
+exports.comment = null;
 
 },{}],87:[function(require,module,exports){
+'use strict';
+var utils = require('./utils');
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.string2binary = function(str) {
+    return utils.string2binary(str);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.string2Uint8Array = function(str) {
+    return utils.transformTo("uint8array", str);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.uint8Array2String = function(array) {
+    return utils.transformTo("string", array);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.string2Blob = function(str) {
+    var buffer = utils.transformTo("arraybuffer", str);
+    return utils.arrayBuffer2Blob(buffer);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.arrayBuffer2Blob = function(buffer) {
+    return utils.arrayBuffer2Blob(buffer);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.transformTo = function(outputType, input) {
+    return utils.transformTo(outputType, input);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.getTypeOf = function(input) {
+    return utils.getTypeOf(input);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.checkSupport = function(type) {
+    return utils.checkSupport(type);
+};
+
+/**
+ * @deprecated
+ * This value will be removed in a future version without replacement.
+ */
+exports.MAX_VALUE_16BITS = utils.MAX_VALUE_16BITS;
+
+/**
+ * @deprecated
+ * This value will be removed in a future version without replacement.
+ */
+exports.MAX_VALUE_32BITS = utils.MAX_VALUE_32BITS;
+
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.pretty = function(str) {
+    return utils.pretty(str);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.findCompression = function(compressionMethod) {
+    return utils.findCompression(compressionMethod);
+};
+
+/**
+ * @deprecated
+ * This function will be removed in a future version without replacement.
+ */
+exports.isRegExp = function (object) {
+    return utils.isRegExp(object);
+};
+
+
+},{"./utils":101}],88:[function(require,module,exports){
 'use strict';
 var USE_TYPEDARRAY = (typeof Uint8Array !== 'undefined') && (typeof Uint16Array !== 'undefined') && (typeof Uint32Array !== 'undefined');
 
@@ -13413,8 +13647,11 @@ exports.uncompress =  function(input) {
     return pako.inflateRaw(input);
 };
 
-},{"pako":98}],88:[function(require,module,exports){
+},{"pako":104}],89:[function(require,module,exports){
 'use strict';
+
+var base64 = require('./base64');
+
 /**
 Usage:
    zip = new JSZip();
@@ -13444,6 +13681,8 @@ function JSZip(data, options) {
     // }
     this.files = {};
 
+    this.comment = null;
+
     // Where we are in the hierarchy
     this.root = "";
     if (data) {
@@ -13463,12 +13702,33 @@ JSZip.prototype = require('./object');
 JSZip.prototype.load = require('./load');
 JSZip.support = require('./support');
 JSZip.defaults = require('./defaults');
-JSZip.utils = require('./utils');
-JSZip.base64 = require('./base64');
+
+/**
+ * @deprecated
+ * This namespace will be removed in a future version without replacement.
+ */
+JSZip.utils = require('./deprecatedPublicUtils');
+
+JSZip.base64 = {
+    /**
+     * @deprecated
+     * This method will be removed in a future version without replacement.
+     */
+    encode : function(input) {
+        return base64.encode(input);
+    },
+    /**
+     * @deprecated
+     * This method will be removed in a future version without replacement.
+     */
+    decode : function(input) {
+        return base64.decode(input);
+    }
+};
 JSZip.compressions = require('./compressions');
 module.exports = JSZip;
 
-},{"./base64":82,"./compressions":84,"./defaults":86,"./load":89,"./object":90,"./support":93,"./utils":95}],89:[function(require,module,exports){
+},{"./base64":81,"./compressions":83,"./defaults":86,"./deprecatedPublicUtils":87,"./load":90,"./object":93,"./support":97}],90:[function(require,module,exports){
 'use strict';
 var base64 = require('./base64');
 var ZipEntries = require('./zipEntries');
@@ -13487,39 +13747,70 @@ module.exports = function(data, options) {
             binary: true,
             optimizedBinaryString: true,
             date: input.date,
-            dir: input.dir
+            dir: input.dir,
+            comment : input.fileComment.length ? input.fileComment : null,
+            createFolders: options.createFolders
         });
+    }
+    if (zipEntries.zipComment.length) {
+        this.comment = zipEntries.zipComment;
     }
 
     return this;
 };
 
-},{"./base64":82,"./zipEntries":96}],90:[function(require,module,exports){
+},{"./base64":81,"./zipEntries":102}],91:[function(require,module,exports){
+(function (Buffer){
+'use strict';
+module.exports = function(data, encoding){
+    return new Buffer(data, encoding);   
+};
+module.exports.test = function(b){
+    return Buffer.isBuffer(b);
+};
+}).call(this,require("buffer").Buffer)
+},{"buffer":5}],92:[function(require,module,exports){
+'use strict';
+var Uint8ArrayReader = require('./uint8ArrayReader');
+
+function NodeBufferReader(data) {
+    this.data = data;
+    this.length = this.data.length;
+    this.index = 0;
+}
+NodeBufferReader.prototype = new Uint8ArrayReader();
+
+/**
+ * @see DataReader.readData
+ */
+NodeBufferReader.prototype.readData = function(size) {
+    this.checkOffset(size);
+    var result = this.data.slice(this.index, this.index + size);
+    this.index += size;
+    return result;
+};
+module.exports = NodeBufferReader;
+
+},{"./uint8ArrayReader":98}],93:[function(require,module,exports){
 'use strict';
 var support = require('./support');
 var utils = require('./utils');
+var crc32 = require('./crc32');
 var signature = require('./signature');
 var defaults = require('./defaults');
 var base64 = require('./base64');
 var compressions = require('./compressions');
 var CompressedObject = require('./compressedObject');
 var nodeBuffer = require('./nodeBuffer');
+var utf8 = require('./utf8');
+var StringWriter = require('./stringWriter');
+var Uint8ArrayWriter = require('./uint8ArrayWriter');
+
 /**
  * Returns the raw data of a ZipObject, decompress the content if necessary.
  * @param {ZipObject} file the file to use.
  * @return {String|ArrayBuffer|Uint8Array|Buffer} the data.
  */
-
-var textEncoder, textDecoder;
-if (
-    support.uint8array &&
-    typeof TextEncoder === "function" &&
-    typeof TextDecoder === "function"
-) {
-    textEncoder = new TextEncoder("utf-8");
-    textDecoder = new TextDecoder("utf-8");
-}
-
 var getRawData = function(file) {
     if (file._data instanceof CompressedObject) {
         file._data = file._data.getContent();
@@ -13552,9 +13843,6 @@ var getBinaryData = function(file) {
         if (!file.options.binary) {
             // unicode text !
             // unicode string => binary string is a painful process, check if we can avoid it.
-            if (textEncoder) {
-                return textEncoder.encode(result);
-            }
             if (support.nodebuffer) {
                 return nodeBuffer(result, "utf-8");
             }
@@ -13589,7 +13877,7 @@ var dataToString = function(asUTF8) {
     }
 
     if (!asUTF8 && !this.options.binary) {
-        result = out.utf8encode(result);
+        result = utils.transformTo("string", out.utf8encode(result));
     }
     return result;
 };
@@ -13602,8 +13890,22 @@ var dataToString = function(asUTF8) {
  */
 var ZipObject = function(name, data, options) {
     this.name = name;
+    this.dir = options.dir;
+    this.date = options.date;
+    this.comment = options.comment;
+
     this._data = data;
     this.options = options;
+
+    /*
+     * This object contains initial values for dir and date.
+     * With them, we can check if the user changed the deprecated metadata in
+     * `ZipObject#options` or not.
+     */
+    this._initialMetadata = {
+      dir : options.dir,
+      date : options.date
+    };
 };
 
 ZipObject.prototype = {
@@ -13710,13 +14012,14 @@ var prepareFileAttrs = function(o) {
  */
 var fileAdd = function(name, data, o) {
     // be sure sub folders exist
-    var parent = parentFolder(name),
-        dataType = utils.getTypeOf(data);
-    if (parent) {
-        folderAdd.call(this, parent);
-    }
+    var dataType = utils.getTypeOf(data),
+        parent;
 
     o = prepareFileAttrs(o);
+
+    if (o.createFolders && (parent = parentFolder(name))) {
+        folderAdd.call(this, parent, true);
+    }
 
     if (o.dir || data === null || typeof data === "undefined") {
         o.base64 = false;
@@ -13752,14 +14055,13 @@ var fileAdd = function(name, data, o) {
     return object;
 };
 
-
 /**
  * Find the parent folder of the path.
  * @private
  * @param {string} path the path to use
  * @return {string} the parent folder, or ""
  */
-var parentFolder = function(path) {
+var parentFolder = function (path) {
     if (path.slice(-1) == '/') {
         path = path.substring(0, path.length - 1);
     }
@@ -13771,18 +14073,23 @@ var parentFolder = function(path) {
  * Add a (sub) folder in the current folder.
  * @private
  * @param {string} name the folder's name
+ * @param {boolean=} [createFolders] If true, automatically create sub 
+ *  folders. Defaults to false.
  * @return {Object} the new folder.
  */
-var folderAdd = function(name) {
+var folderAdd = function(name, createFolders) {
     // Check the name ends with a /
     if (name.slice(-1) != "/") {
         name += "/"; // IE doesn't like substr(-1)
     }
 
+    createFolders = (typeof createFolders !== 'undefined') ? createFolders : false;
+
     // Does this folder already exist?
     if (!this.files[name]) {
         fileAdd.call(this, name, null, {
-            dir: true
+            dir: true,
+            createFolders: createFolders
         });
     }
     return this.files[name];
@@ -13803,7 +14110,7 @@ var generateCompressedObjectFrom = function(file, compression) {
         result.uncompressedSize = file._data.uncompressedSize;
         result.crc32 = file._data.crc32;
 
-        if (result.uncompressedSize === 0 || file.options.dir) {
+        if (result.uncompressedSize === 0 || file.dir) {
             compression = compressions['STORE'];
             result.compressedContent = "";
             result.crc32 = 0;
@@ -13820,12 +14127,12 @@ var generateCompressedObjectFrom = function(file, compression) {
     else {
         // have uncompressed data
         content = getBinaryData(file);
-        if (!content || content.length === 0 || file.options.dir) {
+        if (!content || content.length === 0 || file.dir) {
             compression = compressions['STORE'];
             content = "";
         }
         result.uncompressedSize = content.length;
-        result.crc32 = this.crc32(content);
+        result.crc32 = crc32(content);
         result.compressedContent = compression.compress(utils.transformTo(compression.compressInputType, content));
     }
 
@@ -13845,32 +14152,52 @@ var generateCompressedObjectFrom = function(file, compression) {
  */
 var generateZipParts = function(name, file, compressedObject, offset) {
     var data = compressedObject.compressedContent,
-        utfEncodedFileName = this.utf8encode(file.name),
-        useUTF8 = utfEncodedFileName !== file.name,
+        utfEncodedFileName = utils.transformTo("string", utf8.utf8encode(file.name)),
+        comment = file.comment || "",
+        utfEncodedComment = utils.transformTo("string", utf8.utf8encode(comment)),
+        useUTF8ForFileName = utfEncodedFileName.length !== file.name.length,
+        useUTF8ForComment = utfEncodedComment.length !== comment.length,
         o = file.options,
         dosTime,
         dosDate,
         extraFields = "",
-        unicodePathExtraField = "";
+        unicodePathExtraField = "",
+        unicodeCommentExtraField = "",
+        dir, date;
+
+
+    // handle the deprecated options.dir
+    if (file._initialMetadata.dir !== file.dir) {
+        dir = file.dir;
+    } else {
+        dir = o.dir;
+    }
+
+    // handle the deprecated options.date
+    if(file._initialMetadata.date !== file.date) {
+        date = file.date;
+    } else {
+        date = o.date;
+    }
 
     // date
     // @see http://www.delorie.com/djgpp/doc/rbinter/it/52/13.html
     // @see http://www.delorie.com/djgpp/doc/rbinter/it/65/16.html
     // @see http://www.delorie.com/djgpp/doc/rbinter/it/66/16.html
 
-    dosTime = o.date.getHours();
+    dosTime = date.getHours();
     dosTime = dosTime << 6;
-    dosTime = dosTime | o.date.getMinutes();
+    dosTime = dosTime | date.getMinutes();
     dosTime = dosTime << 5;
-    dosTime = dosTime | o.date.getSeconds() / 2;
+    dosTime = dosTime | date.getSeconds() / 2;
 
-    dosDate = o.date.getFullYear() - 1980;
+    dosDate = date.getFullYear() - 1980;
     dosDate = dosDate << 4;
-    dosDate = dosDate | (o.date.getMonth() + 1);
+    dosDate = dosDate | (date.getMonth() + 1);
     dosDate = dosDate << 5;
-    dosDate = dosDate | o.date.getDate();
+    dosDate = dosDate | date.getDate();
 
-    if (useUTF8) {
+    if (useUTF8ForFileName) {
         // set the unicode path extra field. unzip needs at least one extra
         // field to correctly handle unicode path, so using the path is as good
         // as any other information. This could improve the situation with
@@ -13884,7 +14211,7 @@ var generateZipParts = function(name, file, compressedObject, offset) {
             // Version
             decToHex(1, 1) +
             // NameCRC32
-            decToHex(this.crc32(utfEncodedFileName), 4) +
+            decToHex(crc32(utfEncodedFileName), 4) +
             // UnicodeName
             utfEncodedFileName;
 
@@ -13897,13 +14224,32 @@ var generateZipParts = function(name, file, compressedObject, offset) {
             unicodePathExtraField;
     }
 
+    if(useUTF8ForComment) {
+
+        unicodeCommentExtraField =
+            // Version
+            decToHex(1, 1) +
+            // CommentCRC32
+            decToHex(this.crc32(utfEncodedComment), 4) +
+            // UnicodeName
+            utfEncodedComment;
+
+        extraFields +=
+            // Info-ZIP Unicode Path Extra Field
+            "\x75\x63" +
+            // size
+            decToHex(unicodeCommentExtraField.length, 2) +
+            // content
+            unicodeCommentExtraField;
+    }
+
     var header = "";
 
     // version needed to extract
     header += "\x0A\x00";
     // general purpose bit flag
     // set bit 11 if utf8
-    header += useUTF8 ? "\x00\x08" : "\x00\x00";
+    header += (useUTF8ForFileName || useUTF8ForComment) ? "\x00\x08" : "\x00\x00";
     // compression method
     header += compressedObject.compressionMethod;
     // last mod file time
@@ -13930,20 +14276,21 @@ var generateZipParts = function(name, file, compressedObject, offset) {
     // file header (common to file and central directory)
     header +
     // file comment length
-    "\x00\x00" +
+    decToHex(utfEncodedComment.length, 2) +
     // disk number start
     "\x00\x00" +
     // internal file attributes TODO
     "\x00\x00" +
     // external file attributes
-    (file.options.dir === true ? "\x10\x00\x00\x00" : "\x00\x00\x00\x00") +
+    (dir === true ? "\x10\x00\x00\x00" : "\x00\x00\x00\x00") +
     // relative offset of local header
     decToHex(offset, 4) +
     // file name
     utfEncodedFileName +
     // extra field
-    extraFields;
-
+    extraFields +
+    // file comment
+    utfEncodedComment;
 
     return {
         fileRecord: fileRecord,
@@ -13952,60 +14299,6 @@ var generateZipParts = function(name, file, compressedObject, offset) {
     };
 };
 
-/**
- * An object to write any content to a string.
- * @constructor
- */
-var StringWriter = function() {
-    this.data = [];
-};
-StringWriter.prototype = {
-    /**
-     * Append any content to the current string.
-     * @param {Object} input the content to add.
-     */
-    append: function(input) {
-        input = utils.transformTo("string", input);
-        this.data.push(input);
-    },
-    /**
-     * Finalize the construction an return the result.
-     * @return {string} the generated string.
-     */
-    finalize: function() {
-        return this.data.join("");
-    }
-};
-/**
- * An object to write any content to an Uint8Array.
- * @constructor
- * @param {number} length The length of the array.
- */
-var Uint8ArrayWriter = function(length) {
-    this.data = new Uint8Array(length);
-    this.index = 0;
-};
-Uint8ArrayWriter.prototype = {
-    /**
-     * Append any content to the current array.
-     * @param {Object} input the content to add.
-     */
-    append: function(input) {
-        if (input.length !== 0) {
-            // with an empty Uint8Array, Opera fails with a "Offset larger than array size"
-            input = utils.transformTo("uint8array", input);
-            this.data.set(input, this.index);
-            this.index += input.length;
-        }
-    },
-    /**
-     * Finalize the construction an return the result.
-     * @return {Uint8Array} the generated array.
-     */
-    finalize: function() {
-        return this.data;
-    }
-};
 
 // return the actual prototype of JSZip
 var out = {
@@ -14061,12 +14354,12 @@ var out = {
             if (utils.isRegExp(name)) {
                 var regexp = name;
                 return this.filter(function(relativePath, file) {
-                    return !file.options.dir && regexp.test(relativePath);
+                    return !file.dir && regexp.test(relativePath);
                 });
             }
             else { // text
                 return this.filter(function(relativePath, file) {
-                    return !file.options.dir && relativePath === name;
+                    return !file.dir && relativePath === name;
                 })[0] || null;
             }
         }
@@ -14089,7 +14382,7 @@ var out = {
 
         if (utils.isRegExp(arg)) {
             return this.filter(function(relativePath, file) {
-                return file.options.dir && arg.test(relativePath);
+                return file.dir && arg.test(relativePath);
             });
         }
 
@@ -14119,19 +14412,16 @@ var out = {
             file = this.files[name];
         }
 
-        if (file) {
-            if (!file.options.dir) {
-                // file
-                delete this.files[name];
-            }
-            else {
-                // folder
-                var kids = this.filter(function(relativePath, file) {
-                    return file.name.slice(0, name.length) === name;
-                });
-                for (var i = 0; i < kids.length; i++) {
-                    delete this.files[kids[i].name];
-                }
+        if (file && !file.dir) {
+            // file
+            delete this.files[name];
+        } else {
+            // maybe a folder, delete recursively
+            var kids = this.filter(function(relativePath, file) {
+                return file.name.slice(0, name.length) === name;
+            });
+            for (var i = 0; i < kids.length; i++) {
+                delete this.files[kids[i].name];
             }
         }
 
@@ -14150,7 +14440,8 @@ var out = {
         options = extend(options || {}, {
             base64: true,
             compression: "STORE",
-            type: "base64"
+            type: "base64",
+            comment: null
         });
 
         utils.checkSupport(options.type);
@@ -14158,8 +14449,8 @@ var out = {
         var zipData = [],
             localDirLength = 0,
             centralDirLength = 0,
-            writer, i;
-
+            writer, i,
+            utfEncodedComment = utils.transformTo("string", this.utf8encode(options.comment || this.comment || ""));
 
         // first, generate all the zip parts.
         for (var name in this.files) {
@@ -14199,7 +14490,9 @@ var out = {
         // offset of start of central directory with respect to the starting disk number
         decToHex(localDirLength, 4) +
         // .ZIP file comment length
-        "\x00\x00";
+        decToHex(utfEncodedComment.length, 2) +
+        // .ZIP file comment
+        utfEncodedComment;
 
 
         // we have all the parts (and the total length)
@@ -14243,199 +14536,32 @@ var out = {
     },
 
     /**
-     *
-     *  Javascript crc32
-     *  http://www.webtoolkit.info/
-     *
+     * @deprecated
+     * This method will be removed in a future version without replacement.
      */
-    crc32: function crc32(input, crc) {
-        if (typeof input === "undefined" || !input.length) {
-            return 0;
-        }
-
-        var isArray = utils.getTypeOf(input) !== "string";
-
-        var table = [
-        0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
-        0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
-        0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,
-        0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
-        0x1DB71064, 0x6AB020F2, 0xF3B97148, 0x84BE41DE,
-        0x1ADAD47D, 0x6DDDE4EB, 0xF4D4B551, 0x83D385C7,
-        0x136C9856, 0x646BA8C0, 0xFD62F97A, 0x8A65C9EC,
-        0x14015C4F, 0x63066CD9, 0xFA0F3D63, 0x8D080DF5,
-        0x3B6E20C8, 0x4C69105E, 0xD56041E4, 0xA2677172,
-        0x3C03E4D1, 0x4B04D447, 0xD20D85FD, 0xA50AB56B,
-        0x35B5A8FA, 0x42B2986C, 0xDBBBC9D6, 0xACBCF940,
-        0x32D86CE3, 0x45DF5C75, 0xDCD60DCF, 0xABD13D59,
-        0x26D930AC, 0x51DE003A, 0xC8D75180, 0xBFD06116,
-        0x21B4F4B5, 0x56B3C423, 0xCFBA9599, 0xB8BDA50F,
-        0x2802B89E, 0x5F058808, 0xC60CD9B2, 0xB10BE924,
-        0x2F6F7C87, 0x58684C11, 0xC1611DAB, 0xB6662D3D,
-        0x76DC4190, 0x01DB7106, 0x98D220BC, 0xEFD5102A,
-        0x71B18589, 0x06B6B51F, 0x9FBFE4A5, 0xE8B8D433,
-        0x7807C9A2, 0x0F00F934, 0x9609A88E, 0xE10E9818,
-        0x7F6A0DBB, 0x086D3D2D, 0x91646C97, 0xE6635C01,
-        0x6B6B51F4, 0x1C6C6162, 0x856530D8, 0xF262004E,
-        0x6C0695ED, 0x1B01A57B, 0x8208F4C1, 0xF50FC457,
-        0x65B0D9C6, 0x12B7E950, 0x8BBEB8EA, 0xFCB9887C,
-        0x62DD1DDF, 0x15DA2D49, 0x8CD37CF3, 0xFBD44C65,
-        0x4DB26158, 0x3AB551CE, 0xA3BC0074, 0xD4BB30E2,
-        0x4ADFA541, 0x3DD895D7, 0xA4D1C46D, 0xD3D6F4FB,
-        0x4369E96A, 0x346ED9FC, 0xAD678846, 0xDA60B8D0,
-        0x44042D73, 0x33031DE5, 0xAA0A4C5F, 0xDD0D7CC9,
-        0x5005713C, 0x270241AA, 0xBE0B1010, 0xC90C2086,
-        0x5768B525, 0x206F85B3, 0xB966D409, 0xCE61E49F,
-        0x5EDEF90E, 0x29D9C998, 0xB0D09822, 0xC7D7A8B4,
-        0x59B33D17, 0x2EB40D81, 0xB7BD5C3B, 0xC0BA6CAD,
-        0xEDB88320, 0x9ABFB3B6, 0x03B6E20C, 0x74B1D29A,
-        0xEAD54739, 0x9DD277AF, 0x04DB2615, 0x73DC1683,
-        0xE3630B12, 0x94643B84, 0x0D6D6A3E, 0x7A6A5AA8,
-        0xE40ECF0B, 0x9309FF9D, 0x0A00AE27, 0x7D079EB1,
-        0xF00F9344, 0x8708A3D2, 0x1E01F268, 0x6906C2FE,
-        0xF762575D, 0x806567CB, 0x196C3671, 0x6E6B06E7,
-        0xFED41B76, 0x89D32BE0, 0x10DA7A5A, 0x67DD4ACC,
-        0xF9B9DF6F, 0x8EBEEFF9, 0x17B7BE43, 0x60B08ED5,
-        0xD6D6A3E8, 0xA1D1937E, 0x38D8C2C4, 0x4FDFF252,
-        0xD1BB67F1, 0xA6BC5767, 0x3FB506DD, 0x48B2364B,
-        0xD80D2BDA, 0xAF0A1B4C, 0x36034AF6, 0x41047A60,
-        0xDF60EFC3, 0xA867DF55, 0x316E8EEF, 0x4669BE79,
-        0xCB61B38C, 0xBC66831A, 0x256FD2A0, 0x5268E236,
-        0xCC0C7795, 0xBB0B4703, 0x220216B9, 0x5505262F,
-        0xC5BA3BBE, 0xB2BD0B28, 0x2BB45A92, 0x5CB36A04,
-        0xC2D7FFA7, 0xB5D0CF31, 0x2CD99E8B, 0x5BDEAE1D,
-        0x9B64C2B0, 0xEC63F226, 0x756AA39C, 0x026D930A,
-        0x9C0906A9, 0xEB0E363F, 0x72076785, 0x05005713,
-        0x95BF4A82, 0xE2B87A14, 0x7BB12BAE, 0x0CB61B38,
-        0x92D28E9B, 0xE5D5BE0D, 0x7CDCEFB7, 0x0BDBDF21,
-        0x86D3D2D4, 0xF1D4E242, 0x68DDB3F8, 0x1FDA836E,
-        0x81BE16CD, 0xF6B9265B, 0x6FB077E1, 0x18B74777,
-        0x88085AE6, 0xFF0F6A70, 0x66063BCA, 0x11010B5C,
-        0x8F659EFF, 0xF862AE69, 0x616BFFD3, 0x166CCF45,
-        0xA00AE278, 0xD70DD2EE, 0x4E048354, 0x3903B3C2,
-        0xA7672661, 0xD06016F7, 0x4969474D, 0x3E6E77DB,
-        0xAED16A4A, 0xD9D65ADC, 0x40DF0B66, 0x37D83BF0,
-        0xA9BCAE53, 0xDEBB9EC5, 0x47B2CF7F, 0x30B5FFE9,
-        0xBDBDF21C, 0xCABAC28A, 0x53B39330, 0x24B4A3A6,
-        0xBAD03605, 0xCDD70693, 0x54DE5729, 0x23D967BF,
-        0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94,
-        0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D];
-
-        if (typeof(crc) == "undefined") {
-            crc = 0;
-        }
-        var x = 0;
-        var y = 0;
-        var b = 0;
-
-        crc = crc ^ (-1);
-        for (var i = 0, iTop = input.length; i < iTop; i++) {
-            b = isArray ? input[i] : input.charCodeAt(i);
-            y = (crc ^ b) & 0xFF;
-            x = table[y];
-            crc = (crc >>> 8) ^ x;
-        }
-
-        return crc ^ (-1);
-    },
-
-    // Inspired by http://my.opera.com/GreyWyvern/blog/show.dml/1725165
-
-    /**
-     * http://www.webtoolkit.info/javascript-utf8.html
-     */
-    utf8encode: function(string) {
-        // TextEncoder + Uint8Array to binary string is faster than checking every bytes on long strings.
-        // http://jsperf.com/utf8encode-vs-textencoder
-        // On short strings (file names for example), the TextEncoder API is (currently) slower.
-        if (textEncoder) {
-            var u8 = textEncoder.encode(string);
-            return utils.transformTo("string", u8);
-        }
-        if (support.nodebuffer) {
-            return utils.transformTo("string", nodeBuffer(string, "utf-8"));
-        }
-
-        // array.join may be slower than string concatenation but generates less objects (less time spent garbage collecting).
-        // See also http://jsperf.com/array-direct-assignment-vs-push/31
-        var result = [],
-            resIndex = 0;
-
-        for (var n = 0; n < string.length; n++) {
-
-            var c = string.charCodeAt(n);
-
-            if (c < 128) {
-                result[resIndex++] = String.fromCharCode(c);
-            }
-            else if ((c > 127) && (c < 2048)) {
-                result[resIndex++] = String.fromCharCode((c >> 6) | 192);
-                result[resIndex++] = String.fromCharCode((c & 63) | 128);
-            }
-            else {
-                result[resIndex++] = String.fromCharCode((c >> 12) | 224);
-                result[resIndex++] = String.fromCharCode(((c >> 6) & 63) | 128);
-                result[resIndex++] = String.fromCharCode((c & 63) | 128);
-            }
-
-        }
-
-        return result.join("");
+    crc32: function (input, crc) {
+        return crc32(input, crc);
     },
 
     /**
-     * http://www.webtoolkit.info/javascript-utf8.html
+     * @deprecated
+     * This method will be removed in a future version without replacement.
      */
-    utf8decode: function(input) {
-        var result = [],
-            resIndex = 0;
-        var type = utils.getTypeOf(input);
-        var isArray = type !== "string";
-        var i = 0;
-        var c = 0,
-            c1 = 0,
-            c2 = 0,
-            c3 = 0;
+    utf8encode: function (string) {
+        return utils.transformTo("string", utf8.utf8encode(string));
+    },
 
-        // check if we can use the TextDecoder API
-        // see http://encoding.spec.whatwg.org/#api
-        if (textDecoder) {
-            return textDecoder.decode(
-                utils.transformTo("uint8array", input)
-            );
-        }
-        if (support.nodebuffer) {
-            return utils.transformTo("nodebuffer", input).toString("utf-8");
-        }
-
-        while (i < input.length) {
-
-            c = isArray ? input[i] : input.charCodeAt(i);
-
-            if (c < 128) {
-                result[resIndex++] = String.fromCharCode(c);
-                i++;
-            }
-            else if ((c > 191) && (c < 224)) {
-                c2 = isArray ? input[i + 1] : input.charCodeAt(i + 1);
-                result[resIndex++] = String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-                i += 2;
-            }
-            else {
-                c2 = isArray ? input[i + 1] : input.charCodeAt(i + 1);
-                c3 = isArray ? input[i + 2] : input.charCodeAt(i + 2);
-                result[resIndex++] = String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-                i += 3;
-            }
-
-        }
-
-        return result.join("");
+    /**
+     * @deprecated
+     * This method will be removed in a future version without replacement.
+     */
+    utf8decode: function (input) {
+        return utf8.utf8decode(input);
     }
 };
 module.exports = out;
 
-},{"./base64":82,"./compressedObject":83,"./compressions":84,"./defaults":86,"./nodeBuffer":5,"./signature":91,"./support":93,"./utils":95}],91:[function(require,module,exports){
+},{"./base64":81,"./compressedObject":82,"./compressions":83,"./crc32":84,"./defaults":86,"./nodeBuffer":91,"./signature":94,"./stringWriter":96,"./support":97,"./uint8ArrayWriter":99,"./utf8":100,"./utils":101}],94:[function(require,module,exports){
 'use strict';
 exports.LOCAL_FILE_HEADER = "PK\x03\x04";
 exports.CENTRAL_FILE_HEADER = "PK\x01\x02";
@@ -14444,7 +14570,7 @@ exports.ZIP64_CENTRAL_DIRECTORY_LOCATOR = "PK\x06\x07";
 exports.ZIP64_CENTRAL_DIRECTORY_END = "PK\x06\x06";
 exports.DATA_DESCRIPTOR = "PK\x07\x08";
 
-},{}],92:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 'use strict';
 var DataReader = require('./dataReader');
 var utils = require('./utils');
@@ -14482,15 +14608,49 @@ StringReader.prototype.readData = function(size) {
 };
 module.exports = StringReader;
 
-},{"./dataReader":85,"./utils":95}],93:[function(require,module,exports){
-(function (process){
+},{"./dataReader":85,"./utils":101}],96:[function(require,module,exports){
+'use strict';
+
+var utils = require('./utils');
+
+/**
+ * An object to write any content to a string.
+ * @constructor
+ */
+var StringWriter = function() {
+    this.data = [];
+};
+StringWriter.prototype = {
+    /**
+     * Append any content to the current string.
+     * @param {Object} input the content to add.
+     */
+    append: function(input) {
+        input = utils.transformTo("string", input);
+        this.data.push(input);
+    },
+    /**
+     * Finalize the construction an return the result.
+     * @return {string} the generated string.
+     */
+    finalize: function() {
+        return this.data.join("");
+    }
+};
+
+module.exports = StringWriter;
+
+},{"./utils":101}],97:[function(require,module,exports){
+(function (Buffer){
 'use strict';
 exports.base64 = true;
 exports.array = true;
 exports.string = true;
 exports.arraybuffer = typeof ArrayBuffer !== "undefined" && typeof Uint8Array !== "undefined";
-// contains true if JSZip can read/generate nodejs Buffer, false otherwise, aka checks if we arn't in a browser.
-exports.nodebuffer = !process.browser;
+// contains true if JSZip can read/generate nodejs Buffer, false otherwise.
+// Browserify will provide a Buffer implementation for browsers, which is
+// an augmented Uint8Array (i.e., can be used as either Buffer or U8).
+exports.nodebuffer = typeof Buffer !== "undefined";
 // contains true if JSZip can read/generate Uint8Array, false otherwise.
 exports.uint8array = typeof Uint8Array !== "undefined";
 
@@ -14517,8 +14677,8 @@ else {
     }
 }
 
-}).call(this,require("/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/home/mick/Programming/current/mammoth-wordpress-plugin/js/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":11}],94:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"buffer":5}],98:[function(require,module,exports){
 'use strict';
 var DataReader = require('./dataReader');
 
@@ -14557,13 +14717,264 @@ Uint8ArrayReader.prototype.lastIndexOfSignature = function(sig) {
  */
 Uint8ArrayReader.prototype.readData = function(size) {
     this.checkOffset(size);
+    if(size === 0) {
+        // in IE10, when using subarray(idx, idx), we get the array [0x00] instead of [].
+        return new Uint8Array(0);
+    }
     var result = this.data.subarray(this.index, this.index + size);
     this.index += size;
     return result;
 };
 module.exports = Uint8ArrayReader;
 
-},{"./dataReader":85}],95:[function(require,module,exports){
+},{"./dataReader":85}],99:[function(require,module,exports){
+'use strict';
+
+var utils = require('./utils');
+
+/**
+ * An object to write any content to an Uint8Array.
+ * @constructor
+ * @param {number} length The length of the array.
+ */
+var Uint8ArrayWriter = function(length) {
+    this.data = new Uint8Array(length);
+    this.index = 0;
+};
+Uint8ArrayWriter.prototype = {
+    /**
+     * Append any content to the current array.
+     * @param {Object} input the content to add.
+     */
+    append: function(input) {
+        if (input.length !== 0) {
+            // with an empty Uint8Array, Opera fails with a "Offset larger than array size"
+            input = utils.transformTo("uint8array", input);
+            this.data.set(input, this.index);
+            this.index += input.length;
+        }
+    },
+    /**
+     * Finalize the construction an return the result.
+     * @return {Uint8Array} the generated array.
+     */
+    finalize: function() {
+        return this.data;
+    }
+};
+
+module.exports = Uint8ArrayWriter;
+
+},{"./utils":101}],100:[function(require,module,exports){
+'use strict';
+
+var utils = require('./utils');
+var support = require('./support');
+var nodeBuffer = require('./nodeBuffer');
+
+/**
+ * The following functions come from pako, from pako/lib/utils/strings
+ * released under the MIT license, see pako https://github.com/nodeca/pako/
+ */
+
+// Table with utf8 lengths (calculated by first byte of sequence)
+// Note, that 5 & 6-byte values and some 4-byte values can not be represented in JS,
+// because max possible codepoint is 0x10ffff
+var _utf8len = new Array(256);
+for (var i=0; i<256; i++) {
+  _utf8len[i] = (i >= 252 ? 6 : i >= 248 ? 5 : i >= 240 ? 4 : i >= 224 ? 3 : i >= 192 ? 2 : 1);
+}
+_utf8len[254]=_utf8len[254]=1; // Invalid sequence start
+
+// convert string to array (typed, when possible)
+var string2buf = function (str) {
+    var buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
+
+    // count binary size
+    for (m_pos = 0; m_pos < str_len; m_pos++) {
+        c = str.charCodeAt(m_pos);
+        if ((c & 0xfc00) === 0xd800 && (m_pos+1 < str_len)) {
+            c2 = str.charCodeAt(m_pos+1);
+            if ((c2 & 0xfc00) === 0xdc00) {
+                c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+                m_pos++;
+            }
+        }
+        buf_len += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
+    }
+
+    // allocate buffer
+    if (support.uint8array) {
+        buf = new Uint8Array(buf_len);
+    } else {
+        buf = new Array(buf_len);
+    }
+
+    // convert
+    for (i=0, m_pos = 0; i < buf_len; m_pos++) {
+        c = str.charCodeAt(m_pos);
+        if ((c & 0xfc00) === 0xd800 && (m_pos+1 < str_len)) {
+            c2 = str.charCodeAt(m_pos+1);
+            if ((c2 & 0xfc00) === 0xdc00) {
+                c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+                m_pos++;
+            }
+        }
+        if (c < 0x80) {
+            /* one byte */
+            buf[i++] = c;
+        } else if (c < 0x800) {
+            /* two bytes */
+            buf[i++] = 0xC0 | (c >>> 6);
+            buf[i++] = 0x80 | (c & 0x3f);
+        } else if (c < 0x10000) {
+            /* three bytes */
+            buf[i++] = 0xE0 | (c >>> 12);
+            buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+            buf[i++] = 0x80 | (c & 0x3f);
+        } else {
+            /* four bytes */
+            buf[i++] = 0xf0 | (c >>> 18);
+            buf[i++] = 0x80 | (c >>> 12 & 0x3f);
+            buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+            buf[i++] = 0x80 | (c & 0x3f);
+        }
+    }
+
+    return buf;
+};
+
+// Calculate max possible position in utf8 buffer,
+// that will not break sequence. If that's not possible
+// - (very small limits) return max size as is.
+//
+// buf[] - utf8 bytes array
+// max   - length limit (mandatory);
+var utf8border = function(buf, max) {
+    var pos;
+
+    max = max || buf.length;
+    if (max > buf.length) { max = buf.length; }
+
+    // go back from last position, until start of sequence found
+    pos = max-1;
+    while (pos >= 0 && (buf[pos] & 0xC0) === 0x80) { pos--; }
+
+    // Fuckup - very small and broken sequence,
+    // return max, because we should return something anyway.
+    if (pos < 0) { return max; }
+
+    // If we came to start of buffer - that means vuffer is too small,
+    // return max too.
+    if (pos === 0) { return max; }
+
+    return (pos + _utf8len[buf[pos]] > max) ? pos : max;
+};
+
+// convert array to string
+var buf2string = function (buf) {
+    var str, i, out, c, c_len;
+    var len = buf.length;
+
+    // Reserve max possible length (2 words per char)
+    // NB: by unknown reasons, Array is significantly faster for
+    //     String.fromCharCode.apply than Uint16Array.
+    var utf16buf = new Array(len*2);
+
+    for (out=0, i=0; i<len;) {
+        c = buf[i++];
+        // quick process ascii
+        if (c < 0x80) { utf16buf[out++] = c; continue; }
+
+        c_len = _utf8len[c];
+        // skip 5 & 6 byte codes
+        if (c_len > 4) { utf16buf[out++] = 0xfffd; i += c_len-1; continue; }
+
+        // apply mask on first byte
+        c &= c_len === 2 ? 0x1f : c_len === 3 ? 0x0f : 0x07;
+        // join the rest
+        while (c_len > 1 && i < len) {
+            c = (c << 6) | (buf[i++] & 0x3f);
+            c_len--;
+        }
+
+        // terminated by end of string?
+        if (c_len > 1) { utf16buf[out++] = 0xfffd; continue; }
+
+        if (c < 0x10000) {
+            utf16buf[out++] = c;
+        } else {
+            c -= 0x10000;
+            utf16buf[out++] = 0xd800 | ((c >> 10) & 0x3ff);
+            utf16buf[out++] = 0xdc00 | (c & 0x3ff);
+        }
+    }
+
+    // shrinkBuf(utf16buf, out)
+    if (utf16buf.length !== out) {
+        if(utf16buf.subarray) {
+            utf16buf = utf16buf.subarray(0, out);
+        } else {
+            utf16buf.length = out;
+        }
+    }
+
+    // return String.fromCharCode.apply(null, utf16buf);
+    return utils.applyFromCharCode(utf16buf);
+};
+
+
+// That's all for the pako functions.
+
+
+/**
+ * Transform a javascript string into an array (typed if possible) of bytes,
+ * UTF-8 encoded.
+ * @param {String} str the string to encode
+ * @return {Array|Uint8Array|Buffer} the UTF-8 encoded string.
+ */
+exports.utf8encode = function utf8encode(str) {
+    if (support.nodebuffer) {
+        return nodeBuffer(str, "utf-8");
+    }
+
+    return string2buf(str);
+};
+
+
+/**
+ * Transform a bytes array (or a representation) representing an UTF-8 encoded
+ * string into a javascript string.
+ * @param {Array|Uint8Array|Buffer} buf the data de decode
+ * @return {String} the decoded string.
+ */
+exports.utf8decode = function utf8decode(buf) {
+    if (support.nodebuffer) {
+        return utils.transformTo("nodebuffer", buf).toString("utf-8");
+    }
+
+    buf = utils.transformTo(support.uint8array ? "uint8array" : "array", buf);
+
+    // return buf2string(buf);
+    // Chrome prefers to work with "small" chunks of data
+    // for the method buf2string.
+    // Firefox and Chrome has their own shortcut, IE doesn't seem to really care.
+    var result = [], k = 0, len = buf.length, chunk = 65536;
+    while (k < len) {
+        var nextBoundary = utf8border(buf, Math.min(k + chunk, len));
+        if (support.uint8array) {
+            result.push(buf2string(buf.subarray(k, nextBoundary)));
+        } else {
+            result.push(buf2string(buf.slice(k, nextBoundary)));
+        }
+        k = nextBoundary;
+    }
+    return result.join("");
+
+};
+// vim: set shiftwidth=4 softtabstop=4:
+
+},{"./nodeBuffer":91,"./support":97,"./utils":101}],101:[function(require,module,exports){
 'use strict';
 var support = require('./support');
 var compressions = require('./compressions');
@@ -14579,35 +14990,6 @@ exports.string2binary = function(str) {
         result += String.fromCharCode(str.charCodeAt(i) & 0xff);
     }
     return result;
-};
-/**
- * Create a Uint8Array from the string.
- * @param {string} str the string to transform.
- * @return {Uint8Array} the typed array.
- * @throws {Error} an Error if the browser doesn't support the requested feature.
- */
-exports.string2Uint8Array = function(str) {
-    return exports.transformTo("uint8array", str);
-};
-
-/**
- * Create a string from the Uint8Array.
- * @param {Uint8Array} array the array to transform.
- * @return {string} the string.
- * @throws {Error} an Error if the browser doesn't support the requested feature.
- */
-exports.uint8Array2String = function(array) {
-    return exports.transformTo("string", array);
-};
-/**
- * Create a blob from the given string.
- * @param {string} str the string to transform.
- * @return {Blob} the string.
- * @throws {Error} an Error if the browser doesn't support the requested feature.
- */
-exports.string2Blob = function(str) {
-    var buffer = exports.transformTo("arraybuffer", str);
-    return exports.arrayBuffer2Blob(buffer);
 };
 exports.arrayBuffer2Blob = function(buffer) {
     exports.checkSupport("blob");
@@ -14717,6 +15099,9 @@ function arrayLikeToString(array) {
     }
     return result.join("");
 }
+
+exports.applyFromCharCode = arrayLikeToString;
+
 
 /**
  * Copy the data from an array-like to an other array-like.
@@ -14916,7 +15301,7 @@ exports.isRegExp = function (object) {
 };
 
 
-},{"./compressions":84,"./nodeBuffer":5,"./support":93}],96:[function(require,module,exports){
+},{"./compressions":83,"./nodeBuffer":91,"./support":97}],102:[function(require,module,exports){
 'use strict';
 var StringReader = require('./stringReader');
 var NodeBufferReader = require('./nodeBufferReader');
@@ -14925,6 +15310,7 @@ var utils = require('./utils');
 var sig = require('./signature');
 var ZipEntry = require('./zipEntry');
 var support = require('./support');
+var jszipProto = require('./object');
 //  class ZipEntries {{{
 /**
  * All the entries in the zip file.
@@ -14963,7 +15349,13 @@ ZipEntries.prototype = {
         this.centralDirOffset = this.reader.readInt(4);
 
         this.zipCommentLength = this.reader.readInt(2);
+        // warning : the encoding depends of the system locale
+        // On a linux machine with LANG=en_US.utf8, this field is utf8 encoded.
+        // On a windows machine, this field is encoded with the localized windows code page.
         this.zipComment = this.reader.readString(this.zipCommentLength);
+        // To get consistent behavior with the generation part, we will assume that
+        // this is utf8 encoded.
+        this.zipComment = jszipProto.utf8decode(this.zipComment);
     },
     /**
      * Read the end of the Zip 64 central directory.
@@ -15114,7 +15506,7 @@ ZipEntries.prototype = {
 // }}} end of ZipEntries
 module.exports = ZipEntries;
 
-},{"./nodeBufferReader":5,"./signature":91,"./stringReader":92,"./support":93,"./uint8ArrayReader":94,"./utils":95,"./zipEntry":97}],97:[function(require,module,exports){
+},{"./nodeBufferReader":92,"./object":93,"./signature":94,"./stringReader":95,"./support":97,"./uint8ArrayReader":98,"./utils":101,"./zipEntry":103}],103:[function(require,module,exports){
 'use strict';
 var StringReader = require('./stringReader');
 var utils = require('./utils');
@@ -15338,6 +15730,10 @@ ZipEntry.prototype = {
             if (upath !== null) {
                 this.fileName = upath;
             }
+            var ucomment = this.findExtraFieldUnicodeComment();
+            if (ucomment !== null) {
+                this.fileComment = ucomment;
+            }
         }
     },
 
@@ -15363,11 +15759,35 @@ ZipEntry.prototype = {
             return jszipProto.utf8decode(extraReader.readString(upathField.length - 5));
         }
         return null;
+    },
+
+    /**
+     * Find the unicode comment declared in the extra field, if any.
+     * @return {String} the unicode comment, null otherwise.
+     */
+    findExtraFieldUnicodeComment: function() {
+        var ucommentField = this.extraFields[0x6375];
+        if (ucommentField) {
+            var extraReader = new StringReader(ucommentField.value);
+
+            // wrong version
+            if (extraReader.readInt(1) !== 1) {
+                return null;
+            }
+
+            // the crc of the comment changed, this field is out of date.
+            if (jszipProto.crc32(this.fileComment) !== extraReader.readInt(4)) {
+                return null;
+            }
+
+            return jszipProto.utf8decode(extraReader.readString(ucommentField.length - 5));
+        }
+        return null;
     }
 };
 module.exports = ZipEntry;
 
-},{"./compressedObject":83,"./object":90,"./stringReader":92,"./utils":95}],98:[function(require,module,exports){
+},{"./compressedObject":82,"./object":93,"./stringReader":95,"./utils":101}],104:[function(require,module,exports){
 // Top level file is just a mixin of submodules & constants
 'use strict';
 
@@ -15382,7 +15802,7 @@ var pako = {};
 assign(pako, deflate, inflate, constants);
 
 module.exports = pako;
-},{"./lib/deflate":99,"./lib/inflate":100,"./lib/utils/common":101,"./lib/zlib/constants":104}],99:[function(require,module,exports){
+},{"./lib/deflate":105,"./lib/inflate":106,"./lib/utils/common":107,"./lib/zlib/constants":110}],105:[function(require,module,exports){
 'use strict';
 
 
@@ -15744,7 +16164,7 @@ exports.Deflate = Deflate;
 exports.deflate = deflate;
 exports.deflateRaw = deflateRaw;
 exports.gzip = gzip;
-},{"./utils/common":101,"./utils/strings":102,"./zlib/deflate.js":106,"./zlib/messages":111,"./zlib/zstream":113}],100:[function(require,module,exports){
+},{"./utils/common":107,"./utils/strings":108,"./zlib/deflate.js":112,"./zlib/messages":117,"./zlib/zstream":119}],106:[function(require,module,exports){
 'use strict';
 
 
@@ -16110,7 +16530,7 @@ exports.inflate = inflate;
 exports.inflateRaw = inflateRaw;
 exports.ungzip  = inflate;
 
-},{"./utils/common":101,"./utils/strings":102,"./zlib/constants":104,"./zlib/gzheader":107,"./zlib/inflate.js":109,"./zlib/messages":111,"./zlib/zstream":113}],101:[function(require,module,exports){
+},{"./utils/common":107,"./utils/strings":108,"./zlib/constants":110,"./zlib/gzheader":113,"./zlib/inflate.js":115,"./zlib/messages":117,"./zlib/zstream":119}],107:[function(require,module,exports){
 'use strict';
 
 
@@ -16213,7 +16633,7 @@ exports.setTyped = function (on) {
 };
 
 exports.setTyped(TYPED_OK);
-},{}],102:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 // String encode/decode helpers
 'use strict';
 
@@ -16400,7 +16820,7 @@ exports.utf8border = function(buf, max) {
   return (pos + _utf8len[buf[pos]] > max) ? pos : max;
 };
 
-},{"./common":101}],103:[function(require,module,exports){
+},{"./common":107}],109:[function(require,module,exports){
 'use strict';
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
@@ -16433,7 +16853,7 @@ function adler32(adler, buf, len, pos) {
 
 
 module.exports = adler32;
-},{}],104:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = {
 
   /* Allowed flush values; see deflate() and inflate() below for details */
@@ -16481,7 +16901,7 @@ module.exports = {
   Z_DEFLATED:               8
   //Z_NULL:                 null // Use -1 or null inline, depending on var type
 };
-},{}],105:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 'use strict';
 
 // Note: we can't get significant speed boost here.
@@ -16523,7 +16943,7 @@ function crc32(crc, buf, len, pos) {
 
 
 module.exports = crc32;
-},{}],106:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 'use strict';
 
 var utils   = require('../utils/common');
@@ -18289,7 +18709,7 @@ exports.deflatePending = deflatePending;
 exports.deflatePrime = deflatePrime;
 exports.deflateTune = deflateTune;
 */
-},{"../utils/common":101,"./adler32":103,"./crc32":105,"./messages":111,"./trees":112}],107:[function(require,module,exports){
+},{"../utils/common":107,"./adler32":109,"./crc32":111,"./messages":117,"./trees":118}],113:[function(require,module,exports){
 'use strict';
 
 
@@ -18330,7 +18750,7 @@ function GZheader() {
 }
 
 module.exports = GZheader;
-},{}],108:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 'use strict';
 
 // See state defs from inflate.js
@@ -18657,7 +19077,7 @@ module.exports = function inflate_fast(strm, start) {
   return;
 };
 
-},{}],109:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 'use strict';
 
 
@@ -20161,7 +20581,7 @@ exports.inflateSync = inflateSync;
 exports.inflateSyncPoint = inflateSyncPoint;
 exports.inflateUndermine = inflateUndermine;
 */
-},{"../utils/common":101,"./adler32":103,"./crc32":105,"./inffast":108,"./inftrees":110}],110:[function(require,module,exports){
+},{"../utils/common":107,"./adler32":109,"./crc32":111,"./inffast":114,"./inftrees":116}],116:[function(require,module,exports){
 'use strict';
 
 
@@ -20488,7 +20908,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
   return 0;
 };
 
-},{"../utils/common":101}],111:[function(require,module,exports){
+},{"../utils/common":107}],117:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -20502,7 +20922,7 @@ module.exports = {
   '-5':   'buffer error',        /* Z_BUF_ERROR     (-5) */
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
-},{}],112:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 'use strict';
 
 
@@ -21702,7 +22122,7 @@ exports._tr_stored_block = _tr_stored_block;
 exports._tr_flush_block  = _tr_flush_block;
 exports._tr_tally = _tr_tally;
 exports._tr_align = _tr_align;
-},{"../utils/common":101}],113:[function(require,module,exports){
+},{"../utils/common":107}],119:[function(require,module,exports){
 'use strict';
 
 
@@ -21732,7 +22152,7 @@ function ZStream() {
 }
 
 module.exports = ZStream;
-},{}],114:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 exports.Parser = require("./lib/parser").Parser;
 exports.rules = require("./lib/rules");
 exports.testing = require("./lib/testing");
@@ -21753,7 +22173,7 @@ exports.rule = function(ruleBuilder) {
     };
 };
 
-},{"./lib/StringSource":115,"./lib/Token":116,"./lib/bottom-up":118,"./lib/errors":119,"./lib/parser":121,"./lib/parsing-results":122,"./lib/regex-tokeniser":123,"./lib/rules":124,"./lib/testing":125}],115:[function(require,module,exports){
+},{"./lib/StringSource":121,"./lib/Token":122,"./lib/bottom-up":124,"./lib/errors":125,"./lib/parser":127,"./lib/parsing-results":128,"./lib/regex-tokeniser":129,"./lib/rules":130,"./lib/testing":131}],121:[function(require,module,exports){
 var util = require("util");
 
 var StringSource = module.exports = function(string, description) {
@@ -21797,7 +22217,7 @@ StringSourceRange.prototype.describe = function() {
     return util.format("%sLine number: %s\nCharacter number: %s", description, lineNumber, characterNumber);
 };
 
-},{"util":21}],116:[function(require,module,exports){
+},{"util":20}],122:[function(require,module,exports){
 module.exports = function(name, value, source) {
     this.name = name;
     this.value = value;
@@ -21806,7 +22226,7 @@ module.exports = function(name, value, source) {
     }
 };
 
-},{}],117:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 var TokenIterator = module.exports = function(tokens, startIndex) {
     this._tokens = tokens;
     this._startIndex = startIndex || 0;
@@ -21836,7 +22256,7 @@ TokenIterator.prototype.to = function(end) {
     return start.to(endToken.source);
 };
 
-},{}],118:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 var rules = require("./rules");
 var results = require("./parsing-results");
 
@@ -21966,7 +22386,7 @@ var lazyRule = function(ruleBuilder) {
     };
 };
 
-},{"./parsing-results":122,"./rules":124}],119:[function(require,module,exports){
+},{"./parsing-results":128,"./rules":130}],125:[function(require,module,exports){
 exports.error = function(options) {
     return new Error(options);
 };
@@ -21982,7 +22402,7 @@ Error.prototype.describe = function() {
     return locationDescription + "Expected " + this._expected + "\nbut got " + this._actual;
 };
 
-},{}],120:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 var fromArray = exports.fromArray = function(array) {
     var index = 0;
     var hasNext = function() {
@@ -22065,7 +22485,7 @@ LazyIterator.prototype.toArray = function() {
     return result;
 };
 
-},{}],121:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 var TokenIterator = require("./TokenIterator");
 
 exports.Parser = function(options) {
@@ -22078,7 +22498,7 @@ exports.Parser = function(options) {
     };
 };
 
-},{"./TokenIterator":117}],122:[function(require,module,exports){
+},{"./TokenIterator":123}],128:[function(require,module,exports){
 module.exports = {
     failure: function(errors, remaining) {
         if (errors.length < 1) {
@@ -22183,7 +22603,7 @@ Result.prototype.errors = function() {
     return this._errors;
 };
 
-},{}],123:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 var Token = require("./Token");
 var StringSource = require("./StringSource");
 
@@ -22248,7 +22668,7 @@ function RegexTokeniser(rules) {
 
 
 
-},{"./StringSource":115,"./Token":116}],124:[function(require,module,exports){
+},{"./StringSource":121,"./Token":122}],130:[function(require,module,exports){
 var _ = require("underscore");
 var options = require("option");
 var results = require("./parsing-results");
@@ -22563,7 +22983,7 @@ function describeTokenMismatch(input, expected) {
     return results.failure([error], input);
 }
 
-},{"./errors":119,"./lazy-iterators":120,"./parsing-results":122,"option":127,"underscore":128}],125:[function(require,module,exports){
+},{"./errors":125,"./lazy-iterators":126,"./parsing-results":128,"option":133,"underscore":134}],131:[function(require,module,exports){
 var _ = require("underscore");
 var duck = require("duck");
 
@@ -22634,7 +23054,7 @@ var assertThat = function(test, value, matcher) {
 };
 
 
-},{"./Token":116,"duck":126,"underscore":128}],126:[function(require,module,exports){
+},{"./Token":122,"duck":132,"underscore":134}],132:[function(require,module,exports){
 var util = require("util");
 var assert = require("assert");
 
@@ -22891,7 +23311,7 @@ exports.any = new Matcher({
     }
 });
 
-},{"assert":2,"underscore":128,"util":21}],127:[function(require,module,exports){
+},{"assert":2,"underscore":134,"util":20}],133:[function(require,module,exports){
 exports.none = Object.create({
     map: function() {
         return exports.none;
@@ -22939,7 +23359,7 @@ exports.isOption = function(value) {
     return value === exports.none || value instanceof Some;
 };
 
-},{}],128:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 //     Underscore.js 1.4.4
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
@@ -24167,7 +24587,7 @@ exports.isOption = function(value) {
 
 }).call(this);
 
-},{}],129:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 (function (Buffer){
 // wrapper for non-node envs
 ;(function (sax) {
@@ -25526,7 +25946,7 @@ function write (chunk) {
 })(typeof exports === "undefined" ? sax = {} : exports)
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":6,"stream":13,"string_decoder":19}],130:[function(require,module,exports){
+},{"buffer":5,"stream":12,"string_decoder":18}],136:[function(require,module,exports){
 //     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
