@@ -4935,9 +4935,10 @@ function isList(element, levelIndex, isOrdered) {
 }
 
 },{}],23:[function(require,module,exports){
-var promises = require("./promises");
 var async = require("async");
+var _ = require("underscore");
 
+var promises = require("./promises");
 var documents = require("./documents");
 var htmlPaths = require("./html-paths");
 var HtmlGenerator = require("./html-generator").HtmlGenerator;
@@ -4969,7 +4970,7 @@ function DocumentConversion(options) {
     
     var noteReferences = [];
     
-    options = options || {};
+    options = _.extend({ignoreEmptyParagraphs: true}, options);
     var idPrefix = options.idPrefix === undefined ?
         Math.floor(Math.random() * 1000000000000000) :
         options.idPrefix;
@@ -5013,6 +5014,11 @@ function DocumentConversion(options) {
     
     function convertParagraph(element, html, messages, callback) {
         html.satisfyPath(styleForParagraph(element, messages));
+        
+        if (!options.ignoreEmptyParagraphs) {
+            html.writeAll();
+        }
+        
         setImmediate(function() {
             convertElements(element.children, html, messages, callback);
         });
@@ -5244,7 +5250,7 @@ function unrecognisedStyleWarning(type, element) {
     );
 }
 
-},{"./documents":24,"./html-generator":33,"./html-paths":34,"./images":35,"./promises":38,"./results":39,"async":48}],24:[function(require,module,exports){
+},{"./documents":24,"./html-generator":33,"./html-paths":34,"./images":35,"./promises":38,"./results":39,"async":48,"underscore":138}],24:[function(require,module,exports){
 var _ = require("underscore");
 
 var types = {
@@ -5491,12 +5497,11 @@ function DocumentXmlReader(options) {
                     return new documents.Document(children, {notes: notes});
                 });
             });
-        result.document = result.value;
-        return result;
+        return new Result(result.value, result.messages);
     }
     
     function readNotes() {
-        return Result.combine(rawNotes.map(function(rawNote) {
+        return combineResults(rawNotes.map(function(rawNote) {
             return readXmlElements(rawNote.body).map(function(body) {
                 return new documents.Note({
                     noteType: rawNote.noteType,
@@ -5511,7 +5516,7 @@ function DocumentXmlReader(options) {
 
     function readXmlElements(elements) {
         var results = elements.map(readXmlElement);
-        return Result.combine(results);
+        return combineResults(results);
     }
 
     function readXmlElement(element) {
@@ -5520,13 +5525,11 @@ function DocumentXmlReader(options) {
             if (handler) {
                 return handler(element);
             } else if (!Object.prototype.hasOwnProperty.call(ignoreElements, element.name)) {
-                return new Result(
-                    [],
-                    [warning("An unrecognised element was ignored: " + element.name)]
-                );
+                var message = warning("An unrecognised element was ignored: " + element.name);
+                return emptyResultWithMessages([message]);
             }
         }
-        return new Result([]);
+        return emptyResult();
     }
     
     function readRunProperties(element) {
@@ -5545,7 +5548,7 @@ function DocumentXmlReader(options) {
         properties.isUnderline = !!element.first("w:u");
         properties.isItalic = !!element.first("w:i");
         
-        return new Result(properties);
+        return elementResult(properties);
     }
     
     function readRunStyle(properties, element) {
@@ -5563,7 +5566,7 @@ function DocumentXmlReader(options) {
     function noteReferenceReader(noteType) {
         return function(element) {
             var noteId = element.attributes["w:id"];
-            return new Result(new documents.NoteReference({
+            return elementResult(new documents.NoteReference({
                 noteType: noteType,
                 noteId: noteId
             }));
@@ -5583,7 +5586,8 @@ function DocumentXmlReader(options) {
                         children.filter(negate(isParagraphProperties)),
                         properties
                     );
-                });
+                })
+                .insertExtra();
         },
         "w:pPr": function(element) {
             var properties = {
@@ -5611,7 +5615,7 @@ function DocumentXmlReader(options) {
                 properties.numbering = numbering.findLevel(numId, level);
             }
             
-            return new Result(properties);
+            return elementResult(properties);
         },
         "w:r": function(element) {
             return readXmlElements(element.children)
@@ -5626,10 +5630,10 @@ function DocumentXmlReader(options) {
         },
         "w:rPr": readRunProperties,
         "w:t": function(element) {
-            return new Result(new documents.Text(element.text()));
+            return elementResult(new documents.Text(element.text()));
         },
         "w:tab": function(element) {
-            return new Result(new documents.Tab());
+            return elementResult(new documents.Tab());
         },
         "w:hyperlink": function(element) {
             var relationshipId = element.attributes["r:id"];
@@ -5659,23 +5663,33 @@ function DocumentXmlReader(options) {
         "w:br": function(element) {
             var breakType = element.attributes["w:type"];
             if (breakType) {
-                return new Result([], [warning("Unsupported break type: " + breakType)]);
+                return emptyResultWithMessages([warning("Unsupported break type: " + breakType)]);
             } else {
-                return new Result(new documents.LineBreak());
+                return elementResult(new documents.LineBreak());
             }
         },
         "w:bookmarkStart": function(element){
             var name = element.attributes["w:name"];
             if (name === "_GoBack") {
-                return new Result([]);
+                return emptyResult();
             } else {
-                return new Result(new documents.BookmarkStart({name: name}));
+                return elementResult(new documents.BookmarkStart({name: name}));
             }
+        },
+        
+        "mc:AlternateContent": function(element) {
+            return readChildElements(element.first("mc:Fallback"));
         },
 
         "w:ins": readChildElements,
         "w:smartTag": readChildElements,
         "w:drawing": readChildElements,
+        "w:pict": function(element) {
+            return readChildElements(element).toExtra();
+        },
+        "v:shape": readChildElements,
+        "v:textbox": readChildElements,
+        "w:txbxContent": readChildElements,
         "wp:inline": readDrawingElement,
         "wp:anchor": readDrawingElement
     };
@@ -5692,7 +5706,7 @@ function DocumentXmlReader(options) {
             .getElementsByTagName("pic:blipFill")
             .getElementsByTagName("a:blip");
         
-        return Result.combine(blips.map(readBlip.bind(null, element)));
+        return combineResults(blips.map(readBlip.bind(null, element)));
     }
     
     function readBlip(element, blip) {
@@ -5709,7 +5723,7 @@ function DocumentXmlReader(options) {
         });
         var warnings = supportedImageTypes[contentType] ?
             [] : warning("Image of type " + contentType + " is unlikely to display in web browsers");
-        return new Result(image, warnings);
+        return elementResultWithMessages(image, warnings);
     }
 }
     
@@ -5755,6 +5769,74 @@ function joinZipPath(first, second) {
     // In general, we should check first and second for trailing and leading slashes,
     // but in our specific case this seems to be sufficient
     return first + "/" + second;
+}
+
+
+
+function emptyResultWithMessages(messages) {
+    return new ReadResult(null, null, messages);
+}
+
+function emptyResult() {
+    return new ReadResult(null);
+}
+
+function elementResult(element) {
+    return new ReadResult(element);
+}
+
+function elementResultWithMessages(element, messages) {
+    return new ReadResult(element, null, messages);
+}
+
+function ReadResult(element, extra, messages) {
+    this.value = element || [];
+    this.extra = extra;
+    this._result = new Result({
+        element: this.value,
+        extra: extra
+    }, messages);
+    this.messages = this._result.messages;
+}
+
+ReadResult.prototype.toExtra = function() {
+    return new ReadResult(null, joinElements(this.extra, this.value), this.messages);
+};
+
+ReadResult.prototype.insertExtra = function() {
+    var extra = this.extra;
+    if (extra && extra.length) {
+        return new ReadResult(joinElements(this.value, extra), null, this.messages);
+    } else {
+        return this;
+    }
+};
+
+ReadResult.prototype.map = function(func) {
+    var result = this._result.map(function(value) {
+        return func(value.element);
+    });
+    return new ReadResult(result.value, this.extra, result.messages);
+};
+
+ReadResult.prototype.flatMap = function(func) {
+    var result = this._result.flatMap(function(value) {
+        return func(value.element)._result;
+    });
+    return new ReadResult(result.value.element, joinElements(this.extra, result.value.extra), result.messages);
+};
+
+function combineResults(results) {
+    var result = Result.combine(_.pluck(results, "_result"));
+    return new ReadResult(
+        _.flatten(_.pluck(result.value, "element")),
+        _.filter(_.flatten(_.pluck(result.value, "extra")), function(x) { return x; }),
+        result.messages
+    );
+}
+
+function joinElements(first, second) {
+    return _.flatten([first, second]);
 }
 
 },{"../documents":24,"../results":39,"underscore":138}],27:[function(require,module,exports){
@@ -5937,7 +6019,9 @@ var xmlNamespaceMap = {
     "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing": "wp",
     "http://schemas.openxmlformats.org/drawingml/2006/main": "a",
     "http://schemas.openxmlformats.org/drawingml/2006/picture": "pic",
-    "http://schemas.openxmlformats.org/package/2006/content-types": "content-types"
+    "http://schemas.openxmlformats.org/package/2006/content-types": "content-types",
+    "urn:schemas-microsoft-com:vml": "v",
+    "http://schemas.openxmlformats.org/markup-compatibility/2006": "mc"
 };
 
 
@@ -6016,8 +6100,13 @@ function readStylesXml(xml) {
 function readStyleElement(styleElement) {
     var type = styleElement.attributes["w:type"];
     var styleId = styleElement.attributes["w:styleId"];
-    var name = styleElement.first("w:name").attributes["w:val"];
+    var name = styleName(styleElement);
     return {type: type, styleId: styleId, name: name};
+}
+
+function styleName(styleElement) {
+    var nameElement = styleElement.first("w:name");
+    return nameElement ? nameElement.attributes["w:val"] : null;
 }
 
 },{}],33:[function(require,module,exports){
@@ -6113,6 +6202,7 @@ function HtmlGenerator(options) {
         open: open,
         close: close,
         closeAll: closeAll,
+        writeAll: writeAll,
         asString: asString,
         append: append,
         selfClosing: selfClosing
@@ -16045,6 +16135,7 @@ var pako = {};
 assign(pako, deflate, inflate, constants);
 
 module.exports = pako;
+
 },{"./lib/deflate":107,"./lib/inflate":108,"./lib/utils/common":109,"./lib/zlib/constants":112}],107:[function(require,module,exports){
 'use strict';
 
@@ -16065,6 +16156,7 @@ var Z_FINISH        = 4;
 
 var Z_OK            = 0;
 var Z_STREAM_END    = 1;
+var Z_SYNC_FLUSH    = 2;
 
 var Z_DEFAULT_COMPRESSION = -1;
 
@@ -16094,7 +16186,9 @@ var Z_DEFLATED  = 8;
  *
  * Compressed result, generated by default [[Deflate#onData]]
  * and [[Deflate#onEnd]] handlers. Filled after you push last chunk
- * (call [[Deflate#push]] with `Z_FINISH` / `true` param).
+ * (call [[Deflate#push]] with `Z_FINISH` / `true` param)  or if you
+ * push a chunk with explicit flush (call [[Deflate#push]] with
+ * `Z_SYNC_FLUSH` param).
  **/
 
 /**
@@ -16218,8 +16312,9 @@ var Deflate = function(options) {
  *
  * Sends input data to deflate pipe, generating [[Deflate#onData]] calls with
  * new compressed chunks. Returns `true` on success. The last data block must have
- * mode Z_FINISH (or `true`). That flush internal pending buffers and call
- * [[Deflate#onEnd]].
+ * mode Z_FINISH (or `true`). That will flush internal pending buffers and call
+ * [[Deflate#onEnd]]. For interim explicit flushes (without ending the stream) you
+ * can use mode Z_SYNC_FLUSH, keeping the compression context.
  *
  * On fail call [[Deflate#onEnd]] with error code and return false.
  *
@@ -16272,7 +16367,7 @@ Deflate.prototype.push = function(data, mode) {
       this.ended = true;
       return false;
     }
-    if (strm.avail_out === 0 || (strm.avail_in === 0 && _mode === Z_FINISH)) {
+    if (strm.avail_out === 0 || (strm.avail_in === 0 && (_mode === Z_FINISH || _mode === Z_SYNC_FLUSH))) {
       if (this.options.to === 'string') {
         this.onData(strings.buf2binstring(utils.shrinkBuf(strm.output, strm.next_out)));
       } else {
@@ -16287,6 +16382,13 @@ Deflate.prototype.push = function(data, mode) {
     this.onEnd(status);
     this.ended = true;
     return status === Z_OK;
+  }
+
+  // callback interim results if Z_SYNC_FLUSH.
+  if (_mode === Z_SYNC_FLUSH) {
+    this.onEnd(Z_OK);
+    strm.avail_out = 0;
+    return true;
   }
 
   return true;
@@ -16312,8 +16414,9 @@ Deflate.prototype.onData = function(chunk) {
  * - status (Number): deflate status. 0 (Z_OK) on success,
  *   other if not.
  *
- * Called once after you tell deflate that input stream complete
- * or error happenned. By default - join collected chunks,
+ * Called once after you tell deflate that the input stream is
+ * complete (Z_FINISH) or should be flushed (Z_SYNC_FLUSH)
+ * or if an error happened. By default - join collected chunks,
  * free memory and fill `results` / `err` properties.
  **/
 Deflate.prototype.onEnd = function(status) {
@@ -16410,6 +16513,7 @@ exports.Deflate = Deflate;
 exports.deflate = deflate;
 exports.deflateRaw = deflateRaw;
 exports.gzip = gzip;
+
 },{"./utils/common":109,"./utils/strings":110,"./zlib/deflate.js":114,"./zlib/messages":119,"./zlib/zstream":121}],108:[function(require,module,exports){
 'use strict';
 
@@ -16443,7 +16547,9 @@ var toString = Object.prototype.toString;
  *
  * Uncompressed result, generated by default [[Inflate#onData]]
  * and [[Inflate#onEnd]] handlers. Filled after you push last chunk
- * (call [[Inflate#push]] with `Z_FINISH` / `true` param).
+ * (call [[Inflate#push]] with `Z_FINISH` / `true` param) or if you
+ * push a chunk with explicit flush (call [[Inflate#push]] with
+ * `Z_SYNC_FLUSH` param).
  **/
 
 /**
@@ -16563,8 +16669,9 @@ var Inflate = function(options) {
  *
  * Sends input data to inflate pipe, generating [[Inflate#onData]] calls with
  * new output chunks. Returns `true` on success. The last data block must have
- * mode Z_FINISH (or `true`). That flush internal pending buffers and call
- * [[Inflate#onEnd]].
+ * mode Z_FINISH (or `true`). That will flush internal pending buffers and call
+ * [[Inflate#onEnd]]. For interim explicit flushes (without ending the stream) you
+ * can use mode Z_SYNC_FLUSH, keeping the decompression context.
  *
  * On fail call [[Inflate#onEnd]] with error code and return false.
  *
@@ -16620,7 +16727,7 @@ Inflate.prototype.push = function(data, mode) {
     }
 
     if (strm.next_out) {
-      if (strm.avail_out === 0 || status === c.Z_STREAM_END || (strm.avail_in === 0 && _mode === c.Z_FINISH)) {
+      if (strm.avail_out === 0 || status === c.Z_STREAM_END || (strm.avail_in === 0 && (_mode === c.Z_FINISH || _mode === c.Z_SYNC_FLUSH))) {
 
         if (this.options.to === 'string') {
 
@@ -16646,12 +16753,20 @@ Inflate.prototype.push = function(data, mode) {
   if (status === c.Z_STREAM_END) {
     _mode = c.Z_FINISH;
   }
+
   // Finalize on the last chunk.
   if (_mode === c.Z_FINISH) {
     status = zlib_inflate.inflateEnd(this.strm);
     this.onEnd(status);
     this.ended = true;
     return status === c.Z_OK;
+  }
+
+  // callback interim results if Z_SYNC_FLUSH.
+  if (_mode === c.Z_SYNC_FLUSH) {
+    this.onEnd(c.Z_OK);
+    strm.avail_out = 0;
+    return true;
   }
 
   return true;
@@ -16677,8 +16792,9 @@ Inflate.prototype.onData = function(chunk) {
  * - status (Number): inflate status. 0 (Z_OK) on success,
  *   other if not.
  *
- * Called once after you tell inflate that input stream complete
- * or error happenned. By default - join collected chunks,
+ * Called either after you tell inflate that the input stream is
+ * complete (Z_FINISH) or should be flushed (Z_SYNC_FLUSH)
+ * or if an error happened. By default - join collected chunks,
  * free memory and fill `results` / `err` properties.
  **/
 Inflate.prototype.onEnd = function(status) {
@@ -16794,7 +16910,7 @@ exports.assign = function (obj /*from1, from2, from3, ...*/) {
     var source = sources.shift();
     if (!source) { continue; }
 
-    if (typeof(source) !== 'object') {
+    if (typeof source !== 'object') {
       throw new TypeError(source + 'must be non-object');
     }
 
@@ -16825,7 +16941,7 @@ var fnTyped = {
       return;
     }
     // Fallback to ordinary array
-    for(var i=0; i<len; i++) {
+    for (var i=0; i<len; i++) {
       dest[dest_offs + i] = src[src_offs + i];
     }
   },
@@ -16854,7 +16970,7 @@ var fnTyped = {
 
 var fnUntyped = {
   arraySet: function (dest, src, src_offs, len, dest_offs) {
-    for(var i=0; i<len; i++) {
+    for (var i=0; i<len; i++) {
       dest[dest_offs + i] = src[src_offs + i];
     }
   },
@@ -16882,6 +16998,7 @@ exports.setTyped = function (on) {
 };
 
 exports.setTyped(TYPED_OK);
+
 },{}],110:[function(require,module,exports){
 // String encode/decode helpers
 'use strict';
@@ -16906,8 +17023,8 @@ try { String.fromCharCode.apply(null, new Uint8Array(1)); } catch(__) { STR_APPL
 // Note, that 5 & 6-byte values and some 4-byte values can not be represented in JS,
 // because max possible codepoint is 0x10ffff
 var _utf8len = new utils.Buf8(256);
-for (var i=0; i<256; i++) {
-  _utf8len[i] = (i >= 252 ? 6 : i >= 248 ? 5 : i >= 240 ? 4 : i >= 224 ? 3 : i >= 192 ? 2 : 1);
+for (var q=0; q<256; q++) {
+  _utf8len[q] = (q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1);
 }
 _utf8len[254]=_utf8len[254]=1; // Invalid sequence start
 
@@ -16976,7 +17093,7 @@ function buf2binstring(buf, len) {
   }
 
   var result = '';
-  for(var i=0; i < len; i++) {
+  for (var i=0; i < len; i++) {
     result += String.fromCharCode(buf[i]);
   }
   return result;
@@ -16992,7 +17109,7 @@ exports.buf2binstring = function(buf) {
 // Convert binary string (typed, when possible)
 exports.binstring2buf = function(str) {
   var buf = new utils.Buf8(str.length);
-  for(var i=0, len=buf.length; i < len; i++) {
+  for (var i=0, len=buf.length; i < len; i++) {
     buf[i] = str.charCodeAt(i);
   }
   return buf;
@@ -17077,9 +17194,9 @@ exports.utf8border = function(buf, max) {
 // Small size is preferable.
 
 function adler32(adler, buf, len, pos) {
-  var s1 = (adler & 0xffff) |0
-    , s2 = ((adler >>> 16) & 0xffff) |0
-    , n = 0;
+  var s1 = (adler & 0xffff) |0,
+      s2 = ((adler >>> 16) & 0xffff) |0,
+      n = 0;
 
   while (len !== 0) {
     // Set limit ~ twice less than 5552, to keep
@@ -17102,6 +17219,7 @@ function adler32(adler, buf, len, pos) {
 
 
 module.exports = adler32;
+
 },{}],112:[function(require,module,exports){
 module.exports = {
 
@@ -17150,6 +17268,7 @@ module.exports = {
   Z_DEFLATED:               8
   //Z_NULL:                 null // Use -1 or null inline, depending on var type
 };
+
 },{}],113:[function(require,module,exports){
 'use strict';
 
@@ -17162,9 +17281,9 @@ module.exports = {
 function makeTable() {
   var c, table = [];
 
-  for(var n =0; n < 256; n++){
+  for (var n =0; n < 256; n++) {
     c = n;
-    for(var k =0; k < 8; k++){
+    for (var k =0; k < 8; k++) {
       c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
     }
     table[n] = c;
@@ -17178,12 +17297,12 @@ var crcTable = makeTable();
 
 
 function crc32(crc, buf, len, pos) {
-  var t = crcTable
-    , end = pos + len;
+  var t = crcTable,
+      end = pos + len;
 
   crc = crc ^ (-1);
 
-  for (var i = pos; i < end; i++ ) {
+  for (var i = pos; i < end; i++) {
     crc = (crc >>> 8) ^ t[(crc ^ buf[i]) & 0xFF];
   }
 
@@ -17192,6 +17311,7 @@ function crc32(crc, buf, len, pos) {
 
 
 module.exports = crc32;
+
 },{}],114:[function(require,module,exports){
 'use strict';
 
@@ -18729,7 +18849,7 @@ function deflate(strm, flush) {
         put_byte(s, val);
       } while (val !== 0);
 
-      if (s.gzhead.hcrc && s.pending > beg){
+      if (s.gzhead.hcrc && s.pending > beg) {
         strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
       }
       if (val === 0) {
@@ -18958,6 +19078,7 @@ exports.deflatePending = deflatePending;
 exports.deflatePrime = deflatePrime;
 exports.deflateTune = deflateTune;
 */
+
 },{"../utils/common":109,"./adler32":111,"./crc32":113,"./messages":119,"./trees":120}],115:[function(require,module,exports){
 'use strict';
 
@@ -18978,7 +19099,7 @@ function GZheader() {
                        // but leave for few code modifications
 
   //
-  // Setup limits is not necessary because in js we should not preallocate memory 
+  // Setup limits is not necessary because in js we should not preallocate memory
   // for inflate use constant limit in 65536 bytes
   //
 
@@ -18999,6 +19120,7 @@ function GZheader() {
 }
 
 module.exports = GZheader;
+
 },{}],116:[function(require,module,exports){
 'use strict';
 
@@ -20830,6 +20952,7 @@ exports.inflateSync = inflateSync;
 exports.inflateSyncPoint = inflateSyncPoint;
 exports.inflateUndermine = inflateUndermine;
 */
+
 },{"../utils/common":109,"./adler32":111,"./crc32":113,"./inffast":116,"./inftrees":118}],118:[function(require,module,exports){
 'use strict';
 
@@ -21027,18 +21150,20 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
   // poor man optimization - use if-else instead of switch,
   // to avoid deopts in old v8
   if (type === CODES) {
-      base = extra = work;    /* dummy value--not used */
-      end = 19;
+    base = extra = work;    /* dummy value--not used */
+    end = 19;
+
   } else if (type === LENS) {
-      base = lbase;
-      base_index -= 257;
-      extra = lext;
-      extra_index -= 257;
-      end = 256;
+    base = lbase;
+    base_index -= 257;
+    extra = lext;
+    extra_index -= 257;
+    end = 256;
+
   } else {                    /* DISTS */
-      base = dbase;
-      extra = dext;
-      end = -1;
+    base = dbase;
+    extra = dext;
+    end = -1;
   }
 
   /* initialize opts for loop */
@@ -21171,6 +21296,7 @@ module.exports = {
   '-5':   'buffer error',        /* Z_BUF_ERROR     (-5) */
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
+
 },{}],120:[function(require,module,exports){
 'use strict';
 
@@ -21605,7 +21731,7 @@ function tr_static_init() {
   }
   //Assert (dist == 256, "tr_static_init: dist != 256");
   dist >>= 7; /* from now on, all distances are divided by 128 */
-  for ( ; code < D_CODES; code++) {
+  for (; code < D_CODES; code++) {
     base_dist[code] = dist << 7;
     for (n = 0; n < (1<<(extra_dbits[code]-7)); n++) {
       _dist_code[256 + dist++] = code;
@@ -22371,6 +22497,7 @@ exports._tr_stored_block = _tr_stored_block;
 exports._tr_flush_block  = _tr_flush_block;
 exports._tr_tally = _tr_tally;
 exports._tr_align = _tr_align;
+
 },{"../utils/common":109}],121:[function(require,module,exports){
 'use strict';
 
@@ -22401,6 +22528,7 @@ function ZStream() {
 }
 
 module.exports = ZStream;
+
 },{}],122:[function(require,module,exports){
 exports.Parser = require("./lib/parser").Parser;
 exports.rules = require("./lib/rules");
@@ -23562,6 +23690,15 @@ exports.any = new Matcher({
 
 },{"assert":2,"underscore":136,"util":20}],135:[function(require,module,exports){
 exports.none = Object.create({
+    value: function() {
+        throw new Error('Called value on none');
+    },
+    isNone: function() {
+        return true;
+    },
+    isSome: function() {
+        return false;
+    },
     map: function() {
         return exports.none;
     },
@@ -23588,6 +23725,18 @@ var Some = function(value) {
     this._value = value;
 };
 
+Some.prototype.value = function() {
+    return this._value;
+};
+
+Some.prototype.isNone = function() {
+    return false;
+};
+
+Some.prototype.isSome = function() {
+    return true;
+};
+
 Some.prototype.map = function(func) {
     return new Some(func(this._value));
 };
@@ -23607,6 +23756,13 @@ Some.prototype.valueOrElse = function(value) {
 exports.isOption = function(value) {
     return value === exports.none || value instanceof Some;
 };
+
+exports.fromNullable = function(value) {
+    if (value == null) {
+        return exports.none;
+    }
+    return new Some(value);
+}
 
 },{}],136:[function(require,module,exports){
 //     Underscore.js 1.4.4

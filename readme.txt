@@ -3,7 +3,7 @@ Contributors: michaelwilliamson
 Tags: docx, html, word, office, paste
 Requires at least: 3.5
 Tested up to: 4.1
-Stable tag: 0.1.15
+Stable tag: 0.1.16
 License: BSD 2-clause
 License URI: http://opensource.org/licenses/BSD-2-Clause
 
@@ -43,6 +43,9 @@ The following features are currently supported:
 
 * Links.
 
+* Text boxes. The contents of the text box are treated as a separate paragraph
+  that appears after the paragraph containing the text box.
+
 == Installation ==
 
 Install the plugin in the usual way,
@@ -52,13 +55,17 @@ make sure that it's selected by taking a look at the "Screen Options" for adding
 
 == Changelog ==
 
-= 0.1.15
+= 0.1.16 =
+
+* Update mammoth.js to 0.3.21. Includes basic support for text boxes.
+
+= 0.1.15 =
 
 * Update mammoth.js to 0.3.18. Includes support for hyperlinks to bookmarks in the same document.
 
 * Add support for CKEditor.
 
-= 0.1.14
+= 0.1.14 =
 
 * Support any post type that supports the WordPress editor.
 
