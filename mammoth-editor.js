@@ -4900,6 +4900,8 @@ function openZip(options) {
 },{"../lib/promises":38,"../lib/zipfile":47}],22:[function(require,module,exports){
 exports.paragraph = paragraph;
 exports.run = run;
+exports.underline = new Matcher("underline");
+exports.strikethrough = new Matcher("strikethrough");
 
 
 function paragraph(options) {
@@ -5059,8 +5061,11 @@ function DocumentConversion(options) {
         if (run.verticalAlignment === documents.verticalAlignment.subscript) {
             runHtml.open(htmlPaths.element("sub"));
         }
-        if (run.isUnderline && options.convertUnderline) {
-            options.convertUnderline(runHtml);
+        if (run.isUnderline) {
+            convertUnderline(runHtml);
+        }
+        if (run.isStrikethrough) {
+            convertStrikethrough(runHtml);
         }
         convertElements(run.children, runHtml, messages, function(err) {
             if (err) {
@@ -5071,6 +5076,26 @@ function DocumentConversion(options) {
                 callback();
             }
         });
+    }
+    
+    function convertUnderline(runHtml) {
+        (options.convertUnderline || defaultConvertUnderline)(runHtml);
+    }
+    
+    function convertStrikethrough(runHtml) {
+        var style = findStyle({type: "strikethrough"});
+        if (style) {
+            runHtml.appendPath(style.to);
+        } else {
+            runHtml.open(htmlPaths.element("s"));
+        }
+    }
+    
+    function defaultConvertUnderline(runHtml) {
+        var style = findStyle({type: "underline"});
+        if (style) {
+            runHtml.appendPath(style.to);
+        }
     }
     
     function findStyle(element) {
@@ -5301,6 +5326,7 @@ function Run(children, properties) {
         isBold: properties.isBold,
         isUnderline: properties.isUnderline,
         isItalic: properties.isItalic,
+        isStrikethrough: properties.isStrikethrough,
         verticalAlignment: properties.verticalAlignment || verticalAlignment.baseline
     };
 }
@@ -5547,6 +5573,7 @@ function DocumentXmlReader(options) {
         properties.isBold = !!element.first("w:b");
         properties.isUnderline = !!element.first("w:u");
         properties.isItalic = !!element.first("w:i");
+        properties.isStrikethrough = !!element.first("w:strike");
         
         return elementResult(properties);
     }
@@ -6155,6 +6182,10 @@ function HtmlGenerator(options) {
         }
     }
     
+    function appendPath(style) {
+        style.forEach(open);
+    }
+    
     function stylePartMatchesStackElement(stylePart, stackElement) {
         return stackElement && stylePart.matchesElement(stackElement);
     }
@@ -6198,6 +6229,7 @@ function HtmlGenerator(options) {
     
     return {
         satisfyPath: satisfyPath,
+        appendPath: appendPath,
         text: text,
         open: open,
         close: close,
@@ -6373,6 +6405,8 @@ var standardOptions = exports._standardOptions = {
         "p[style-name='heading 3'] => h3:fresh",
         "p[style-name='heading 4'] => h4:fresh",
         "p[style-name='heading 4'] => h4:fresh",
+        
+        "r[style-name='Strong'] => strong",
         
         "p[style-name='footnote text'] => p",
         "r[style-name='footnote reference'] =>",
@@ -6622,7 +6656,7 @@ function documentMatcherRule() {
     );
     var matcherSuffixes = lop.rules.zeroOrMore(matcherSuffix);
     
-    return sequence(
+    var paragraphOrRun = sequence(
         sequence.capture(elementTypeRule),
         sequence.capture(matcherSuffixes)
     ).map(function(createMatcher, suffixes) {
@@ -6632,6 +6666,15 @@ function documentMatcherRule() {
         });
         return createMatcher(matcherOptions);
     });
+    
+    var underline = identifierToConstant("u", documentMatchers.underline);
+    var strikethrough = identifierToConstant("strike", documentMatchers.strikethrough);
+    
+    return lop.rules.firstOf("element type", 
+        paragraphOrRun,
+        underline,
+        strikethrough
+    );
 }
 
 function readHtmlPath(string) {
