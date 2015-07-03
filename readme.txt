@@ -3,7 +3,7 @@ Contributors: michaelwilliamson
 Tags: docx, html, word, office, paste
 Requires at least: 3.5
 Tested up to: 4.2.2
-Stable tag: 0.1.17
+Stable tag: 0.1.18
 License: BSD 2-clause
 License URI: http://opensource.org/licenses/BSD-2-Clause
 
@@ -54,6 +54,10 @@ If you can't see the meta box,
 make sure that it's selected by taking a look at the "Screen Options" for adding a post.
 
 == Changelog ==
+
+= 0.1.18 =
+
+* Update mammoth.js to 0.3.23. Includes support for links and images in footnotes and endnotes.
 
 = 0.1.17 =
 
