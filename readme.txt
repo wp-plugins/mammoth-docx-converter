@@ -2,8 +2,8 @@
 Contributors: michaelwilliamson
 Tags: docx, html, word, office, paste
 Requires at least: 3.5
-Tested up to: 4.2.2
-Stable tag: 0.1.18
+Tested up to: 4.3
+Stable tag: 0.1.19
 License: BSD 2-clause
 License URI: http://opensource.org/licenses/BSD-2-Clause
 
@@ -54,6 +54,10 @@ If you can't see the meta box,
 make sure that it's selected by taking a look at the "Screen Options" for adding a post.
 
 == Changelog ==
+
+= 0.1.19 =
+
+* Update mammoth.js to 0.3.25-pre.1. Includes experimental support for embedded style maps.
 
 = 0.1.18 =
 
