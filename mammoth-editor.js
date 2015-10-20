@@ -7344,7 +7344,8 @@ function writer(options) {
 var indentedElements = {
     div: true,
     p: true,
-    ul: true
+    ul: true,
+    li: true
 };
 
 
@@ -7358,7 +7359,9 @@ function prettyWriter() {
     var writer = simpleWriter();
     
     function open(tagName, attributes) {
-        indent();
+        if (indentedElements[tagName]) {
+            indent();
+        }
         stack.push(tagName);
         writer.open(tagName, attributes);
         if (indentedElements[tagName]) {
@@ -7370,8 +7373,8 @@ function prettyWriter() {
     function close(tagName) {
         if (indentedElements[tagName]) {
             indentationLevel--;
+            indent();
         }
-        indent();
         stack.pop();
         writer.close(tagName);
     }

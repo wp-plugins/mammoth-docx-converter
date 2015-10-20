@@ -3,7 +3,7 @@ Contributors: michaelwilliamson
 Tags: docx, html, word, office, paste
 Requires at least: 3.5
 Tested up to: 4.3
-Stable tag: 0.1.20
+Stable tag: 0.1.22
 License: BSD 2-clause
 License URI: http://opensource.org/licenses/BSD-2-Clause
 
@@ -54,6 +54,11 @@ If you can't see the meta box,
 make sure that it's selected by taking a look at the "Screen Options" for adding a post.
 
 == Changelog ==
+
+= 0.1.22 =
+
+* Update mammoth.js to 0.3.28-pre.1. Fixes newlines being inserted around inline
+  elements when the editor is in text mode.
 
 = 0.1.21 =
 
